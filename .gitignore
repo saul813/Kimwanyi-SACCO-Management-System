@@ -13,6 +13,7 @@ target/
 *.iml
 *.ipr
 .smarttomcat/
+.idea/
 
 ### Eclipse ###
 .apt_generated
