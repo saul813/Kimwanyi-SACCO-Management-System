@@ -1,21 +1,110 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example</groupId>
-  <artifactId>Kimwanyi_SACCO</artifactId>
-  <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>Kimwanyi_SACCO Maven Webapp</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <build>
-    <finalName>Kimwanyi_SACCO</finalName>
-  </build>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+
+<groupId>com.example</groupId>
+<artifactId>Kimwanyi_SACCO</artifactId>
+<version>1.0-SNAPSHOT</version>
+<packaging>war</packaging>
+<name>Kimwanyi_SACCO Maven Webapp</name>
+<url>http://maven.apache.org</url>
+
+<properties>
+  <maven.compiler.source>17</maven.compiler.source>
+  <maven.compiler.target>17</maven.compiler.target>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+  <mojarra.jsf.version>4.0.5</mojarra.jsf.version>
+  <weld.cdi.version>5.1.2.Final</weld.cdi.version>
+</properties>
+
+<dependencies>
+  <!-- 1. Jakarta Servlet API (Provided by Tomcat) -->
+  <dependency>
+    <groupId>jakarta.servlet</groupId>
+    <artifactId>jakarta.servlet-api</artifactId>
+    <version>${jakarta.servlet.version}</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!-- 2. JSF Core & Runtime Implementation (Mojarra) -->
+  <dependency>
+    <groupId>org.glassfish</groupId>
+    <artifactId>jakarta.faces</artifactId>
+    <version>${mojarra.jsf.version}</version>
+  </dependency>
+
+  <!-- 3. CDI Integration Layer for Tomcat Runtimes (Weld) -->
+  <dependency>
+    <groupId>org.jboss.weld.servlet</groupId>
+    <artifactId>weld-servlet-shaded</artifactId>
+    <version>5.1.5.Final</version>
+  </dependency>
+  <!--Provides @Named-->
+  <dependency>
+    <groupId>jakarta.inject</groupId>
+    <artifactId>jakarta.inject-api</artifactId>
+    <version>2.0.1</version>
+  </dependency>
+
+  <!-- Missing Enterprise Contexts API (Provides @SessionScoped) -->
+  <dependency>
+    <groupId>jakarta.enterprise</groupId>
+    <artifactId>jakarta.enterprise.cdi-api</artifactId>
+    <version>4.0.1</version>
+  </dependency>
+
+  <!-- PrimeFaces Component Library -->
+  <dependency>
+    <groupId>org.primefaces</groupId>
+    <artifactId>primefaces</artifactId>
+    <version>14.0.0</version> <!-- Uses the modern Jakarta namespace matching Jakarta EE 10 -->
+    <classifier>jakarta</classifier>
+  </dependency>
+
+  <!-- MariaDB/MySQL Database Driver Connector -->
+  <dependency>
+    <groupId>org.mariadb.jdbc</groupId>
+    <artifactId>mariadb-java-client</artifactId>
+    <version>3.5.1</version>
+  </dependency>
+
+  <!-- Jakarta Persistence (JPA) Specification API -->
+  <dependency>
+    <groupId>jakarta.persistence</groupId>
+    <artifactId>jakarta.persistence-api</artifactId>
+    <version>3.1.0</version>
+  </dependency>
+
+  <!-- Hibernate JPA implementation -->
+  <dependency>
+    <groupId>org.hibernate.orm</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>6.4.10.Final</version>
+  </dependency>
+
+</dependencies>
+
+<build>
+  <finalName>Kimwanyi_SACCO</finalName>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.11.0</version>
+      <configuration>
+        <source>${maven.compiler.source}</source>
+        <target>${maven.compiler.target}</target>
+      </configuration>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-war-plugin</artifactId>
+      <version>3.4.0</version>
+    </plugin>
+  </plugins>
+</build>
 </project>
+
