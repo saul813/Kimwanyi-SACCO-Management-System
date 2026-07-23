@@ -1,92 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:p="http://primefaces.org"
-      xmlns:f="jakarta.faces.core">
-<h:head>
-    <title>My Profile Security - Kimwanyi SACCO</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <h:outputStylesheet library="css" name="custom-style.css"/>
-    <style>
-        .portal-header { background-color: #0d6efd; color: #fff; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; }
-        .nav-toolbar { background: #e9ecef; padding: 15px 5%; display: flex; gap: 15px; }
-        .content-frame { padding: 40px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #dee2e6; font-size: 15px; }
-        .info-label { color: #6c757d; font-weight: 500; }
-        .info-value { color: #212529; font-weight: 600; }
-    </style>
-</h:head>
-<h:body>
-    <p:growl id="profileGrowl" showDetail="true" life="4000"/>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/member-sidebar-template.xhtml">
 
-    <header class="portal-header">
-        <h2 style="margin:0;">Kimwanyi SACCO Portal</h2>
-    </header>
+    <ui:define name="title">My Profile - Kimwanyi SACCO</ui:define>
 
-    <div class="nav-toolbar">
-        <p:linkButton outcome="member-dashboard.xhtml" value="Dashboard Overview" icon="pi pi-home" styleClass="ui-button-outlined"/>
-        <p:linkButton outcome="loan-apply.xhtml" value="Apply for a Loan" icon="pi pi-file-edit" styleClass="ui-button-outlined"/>
-        <p:linkButton outcome="statement.xhtml" value="On-Demand Statements" icon="pi pi-file-pdf" styleClass="ui-button-outlined"/>
-        <p:linkButton outcome="profile.xhtml" value="My Profile Security" icon="pi pi-user" styleClass="ui-button-outlined"/>
-    </div>
-
-    <div class="content-frame">
-        <!-- Left Column: Registry Credentials Metadata Card -->
-
-        <p:card title="Profile Details">
-        <div style="margin-top: 15px;">
-            <div class="info-row">
-                <span class="info-label">Full Account Name</span>
-                <span class="info-value">#{authBean.loggedInUser.fullName}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">National ID (NIN)</span>
-                <span class="info-value" style="font-family: monospace;">#{authBean.loggedInUser.nationalId}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Registered Mobile Number</span>
-                <span class="info-value">#{authBean.loggedInUser.phoneNumber}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Portal System Access Role</span>
-                <p:tag severity="info" value="#{authBean.loggedInUser.role}"/>
-            </div>
-            <div class="info-row" style="border-bottom: none;">
-                <span class="info-label">Account Verification State</span>
-                <p:tag severity="success" value="#{authBean.loggedInUser.status}"/>
-            </div>
+    <ui:define name="content">
+        <div style="margin-bottom:25px;">
+            <h2 style="margin:0; color:#212529;">My Profile</h2>
+            <p style="margin:5px 0 0 0; color:#6c757d;">View account details and update your portal password.</p>
         </div>
-        </p:card>
 
-    <!-- Right Column: Interactive Password Mutation Handling Card Form -->
-    <p:panel header="Modify Portal Access Password">
-        <h:form id="passwordModificationForm">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:30px;">
+            <section class="member-card">
+                <h3>Profile Details</h3>
+                <div class="info-row"><span class="info-label">Full Account Name</span><span class="info-value">#{authBean.loggedInUser.fullName}</span></div>
+                <div class="info-row"><span class="info-label">National ID (NIN)</span><span class="info-value">#{authBean.loggedInUser.nationalId}</span></div>
+                <div class="info-row"><span class="info-label">Registered Mobile Number</span><span class="info-value">#{authBean.loggedInUser.phoneNumber}</span></div>
+                <div class="info-row"><span class="info-label">Portal Role</span><span class="status-pill">#{authBean.loggedInUser.role}</span></div>
+                <div class="info-row" style="border-bottom:none;"><span class="info-label">Account Status</span><span class="status-pill">#{authBean.loggedInUser.status}</span></div>
+            </section>
 
-            <div class="form-group">
-                <p:outputLabel for="currentPassword" value="Type Your Current Password"/>
-                <p:password id="currentPassword" value="#{memberPortalBean.currentPasswordInput}"
-                            required="true" requiredMessage="Verification of current password is required."
-                            toggleMask="true" placeholder="••••••••"/>
-            </div>
+            <section class="member-card">
+                <h3>Modify Portal Password</h3>
+                <h:form id="passwordModificationForm">
+                    <div class="form-group">
+                        <h:outputLabel for="currentPassword" value="Current Password"/>
+                        <h:inputSecret id="currentPassword" value="#{memberPortalBean.currentPasswordInput}"
+                                       required="true"
+                                       requiredMessage="Current password is required."
+                                       styleClass="login-input"
+                                       style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
+                    </div>
 
-            <div class="form-group">
-                <p:outputLabel for="newPassword" value="Create Your New Security Password"/>
-                <p:password id="newPassword" value="#{memberPortalBean.newPasswordInput}"
-                            required="true" requiredMessage="New password parameters are mandatory."
-                            feedback="true" inline="true" toggleMask="true" placeholder="••••••••"/>
-            </div>
+                    <div class="form-group">
+                        <h:outputLabel for="newPassword" value="New Password"/>
+                        <h:inputSecret id="newPassword" value="#{memberPortalBean.newPasswordInput}"
+                                       required="true"
+                                       requiredMessage="New password is required."
+                                       styleClass="login-input"
+                                       style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
+                    </div>
 
-            <div style="margin-top: 25px;">
-                <p:commandButton value="Commit Credentials Change"
-                                 action="#{memberPortalBean.updateProfilePassword}"
-                                 update="passwordModificationForm :profileGrowl"
-                                 icon="pi pi-lock" styleClass="ui-button-raised ui-button-warning"
-                                 style="width:100%; padding:8px 0;"/>
-            </div>
-
-        </h:form>
-    </p:panel>
-</div>
-</h:body>
-        </html>
+                    <div class="form-actions">
+                        <h:commandButton value="Commit Credentials Change"
+                                         action="#{memberPortalBean.updateProfilePassword()}"
+                                         styleClass="login-native-submit"
+                                         style="display:block; width:100%; min-height:44px; box-sizing:border-box; border:1px solid #ffc107; border-radius:8px; background:#ffc107; color:#212529; font-family:inherit; font-size:16px; font-weight:700; cursor:pointer;"/>
+                    </div>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

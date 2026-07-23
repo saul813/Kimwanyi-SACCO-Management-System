@@ -1,58 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:p="http://primefaces.org"
-      xmlns:f="jakarta.faces.core">
-<h:head>
-    <title>Member Dashboard - Kimwanyi SACCO</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <h:outputStylesheet library="css" name="custom-style.css"/>
-    <style>
-        .portal-header { background-color: #0d6efd; color: #fff; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; }
-        .portal-wrapper { padding: 40px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .nav-toolbar { background: #e9ecef; padding: 15px 5%; display: flex; gap: 15px; }
-    </style>
-</h:head>
-<h:body>
-    <header class="portal-header">
-        <h2 style="margin:0;">Kimwanyi SACCO Portal</h2>
-        <h:form><p:commandButton value="Logout" action="#{authBean.logout}" icon="pi pi-sign-out" styleClass="ui-button-flat ui-button-help" style="color:#fff;"/></h:form>
-    </header>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/member-sidebar-template.xhtml">
 
-    <div class="nav-toolbar">
-        <p:linkButton outcome="member-dashboard.xhtml" value="Dashboard Overview" icon="pi pi-home" styleClass="ui-button-outlined"/>
-        <p:linkButton outcome="loan-apply.xhtml" value="Apply for a Loan" icon="pi pi-file-edit" styleClass="ui-button-outlined"/>
-        <p:linkButton outcome="statement.xhtml" value="On-Demand Statements" icon="pi pi-file-pdf" styleClass="ui-button-outlined"/>
-        <p:linkButton outcome="profile.xhtml" value="My Profile Security" icon="pi pi-user" styleClass="ui-button-outlined"/>
-    </div>
+    <ui:define name="title">Member Dashboard - Kimwanyi SACCO</ui:define>
 
-    <div class="portal-wrapper">
-        <!-- Balance Tracking Card Layer -->
-        <p:card title="My Savings Account" style="border-left: 5px solid #198754;">
-            <p style="font-size:14px; color:#6c757d; margin:0 0 10px 0;">Account Ref Number: <code>#{memberPortalBean.activeAccountNumber}</code></p>
-            <h3 style="font-size:32px; color:#198754; margin:0;">
-                UGX <h:outputText value="#{memberPortalBean.activeAccountBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText>
-            </h3>
-            <h:panelGroup rendered="#{not memberPortalBean.hasActiveAccount}">
-                <div style="background-color:#fff3cd; color:#664d03; padding:12px; border-radius:6px; margin-top:15px; border:1px solid #ffe69c;">
-                    <strong>Savings account pending:</strong> Your member profile is active, but no savings ledger has been provisioned yet. Contact an administrator.
-                </div>
-            </h:panelGroup>
-            <p style="font-size:13px; color:#6c757d; margin-top:15px; border-top:1px solid #dee2e6; padding-top:10px;">Enforced Minimum Balance Threshold: UGX 20,000</p>
-        </p:card>
+    <ui:define name="content">
+        <div style="margin-bottom:25px;">
+            <h2 style="margin:0; color:#212529;">Member Dashboard</h2>
+            <p style="margin:5px 0 0 0; color:#6c757d;">Savings overview, credit applications, and member account status.</p>
+        </div>
 
-        <!-- Dynamic Personal Loan Applications Status Pipeline -->
-        <p:card title="My Credit Applications Portfolio">
-            <p:dataTable value="#{memberPortalBean.personalLoans}" var="loan" rows="3" emptyMessage="You have not requested any borrowing options yet." styleClass="ui-datatable-sm">
-                <p:column headerText="Principal Requested">
-                    <h:outputText value="#{loan.principalAmount}"><f:convertNumber pattern="#,##0"/></h:outputText>
-                </p:column>
-                <p:column headerText="Status">
-                    <p:tag severity="#{loan.status == 'APPROVED' ? 'success' : (loan.status == 'PENDING' ? 'warning' : 'danger')}" value="#{loan.status}"/>
-                </p:column>
-            </p:dataTable>
-        </p:card>
-    </div>
-</h:body>
-</html>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:30px;">
+            <section class="member-card" style="border-left:5px solid #198754;">
+                <h3>My Savings Account</h3>
+                <p style="font-size:14px; color:#6c757d; margin:0 0 10px 0;">Account Ref Number: <code>#{memberPortalBean.activeAccountNumber}</code></p>
+                <h2 style="font-size:32px; color:#198754; margin:0;">
+                    UGX <h:outputText value="#{memberPortalBean.activeAccountBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText>
+                </h2>
+                <h:panelGroup rendered="#{not memberPortalBean.hasActiveAccount}">
+                    <div style="background:#fff3cd; color:#664d03; padding:12px; border-radius:6px; margin-top:15px; border:1px solid #ffe69c;">
+                        <strong>Savings account pending:</strong> Your member profile is active, but no savings ledger has been provisioned yet.
+                    </div>
+                </h:panelGroup>
+                <p style="font-size:13px; color:#6c757d; margin-top:15px; border-top:1px solid #dee2e6; padding-top:10px;">Minimum Balance Threshold: UGX 20,000</p>
+            </section>
+
+            <section class="member-card">
+                <h3>My Credit Applications Portfolio</h3>
+                <table class="simple-table">
+                    <thead>
+                    <tr>
+                        <th>Principal Requested</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ui:repeat value="#{memberPortalBean.personalLoans}" var="loan">
+                        <tr>
+                            <td>UGX <h:outputText value="#{loan.principalAmount}"><f:convertNumber pattern="#,##0"/></h:outputText></td>
+                            <td><span class="status-pill">#{loan.status}</span></td>
+                        </tr>
+                    </ui:repeat>
+                    </tbody>
+                </table>
+                <h:panelGroup rendered="#{empty memberPortalBean.personalLoans}">
+                    <p style="color:#6c757d; margin-bottom:0;">You have not requested any loans yet.</p>
+                </h:panelGroup>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>
