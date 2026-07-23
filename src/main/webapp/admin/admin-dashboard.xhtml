@@ -2,8 +2,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="jakarta.faces.html"
                 xmlns:ui="jakarta.faces.facelets"
-                xmlns:p="http://primefaces.org"
-                template="/WEB-INF/templates/dashboard-template.xhtml">
+                template="/WEB-INF/templates/admin-sidebar-template.xhtml">
 
     <ui:define name="title">Admin Overview - Kimwanyi SACCO</ui:define>
 
@@ -12,6 +11,12 @@
     <h2 style="margin: 0; color: #212529;">Operational Summary</h2>
     <p style="margin: 5px 0 0 0; color: #6c757d;">Real-time metrics for Kimwanyi SACCO corporate positions.</p>
 </div>
+
+<h:panelGroup rendered="#{not adminDashboardBean.databaseAvailable}">
+    <div style="background:#fff3cd; color:#664d03; border:1px solid #ffecb5; border-radius:8px; padding:14px 16px; margin-bottom:20px;">
+        <strong>Database Notice:</strong> #{adminDashboardBean.databaseStatusMessage}
+    </div>
+</h:panelGroup>
 
 <!-- Metric Grid Layer -->
 <div class="metric-grid">
@@ -41,11 +46,12 @@
 </div>
 
 <!-- Quick Information Panel Notice -->
-<p:panel header="System Directives" style="margin-top: 20px;">
+<section style="margin-top: 20px; background:#ffffff; border:1px solid #dee2e6; border-radius:8px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <h3 style="margin:0 0 10px 0; color:#212529;">System Directives</h3>
     <p style="line-height: 1.6; margin: 0; color: #495057;">
         Use the navigation menu sidebar pane to manage daily member profiles, approve open underwriting loan documentation matrices, or log cashier teller transaction vouchers.
     </p>
-</p:panel>
+</section>
 </ui:define>
 
 </ui:composition>
