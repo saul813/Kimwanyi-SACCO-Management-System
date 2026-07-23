@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://w3.org"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/dashboard-template.xhtml">
+
+    <ui:define name="title">Post Deposit - Kimwanyi SACCO</ui:define>
+
+    <ui:define name="content">
+        <div style="margin-bottom: 25px;">
+            <h2 style="margin: 0; color: #212529;">Teller Cash Deposit Desk</h2>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">Post inbound cash deposits directly to member savings accounts.</p>
+        </div>
+
+        <p:panel header="Process Inbound Cash Deposit" style="max-width: 600px;">
+            <h:form id="depositForm">
+
+                <!-- Account Resolution Node Lookup Panel -->
+                <div class="form-group" style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div style="flex-grow: 1;">
+                        <p:outputLabel for="searchNin" value="Search Member National ID (NIN)" style="font-weight:600; display:block; margin-bottom:8px;"/>
+                        <p:inputMask id="searchNin" value="#{transactionBean.searchNationalId}" mask="aa999999999aaa" placeholder="e.g., CM81023100XYZ1" style="text-transform: uppercase; width: 100% !important;"/>
+                    </div>
+                    <p:commandButton value="Lookup" action="#{transactionBean.lookupMemberAccount}" update="depositForm :templateMsg" icon="pi pi-search" styleClass="ui-button-secondary"/>
+                </div>
+
+                <!-- Account Information Display Container Panel -->
+                <h:panelGroup id="accountDetailsDisplay" rendered="#{transactionBean.targetAccount != null}">
+                    <div style="background-color: #f1f8f5; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #d1e7dd;">
+                        <p style="margin: 0 0 8px 0; font-size: 15px;"><strong>Member Name:</strong> #{transactionBean.targetAccount.member.fullName}</p>
+                        <p style="margin: 0 0 8px 0; font-size: 15px;"><strong>Ledger Account Number:</strong> <code style="font-size:14px;">#{transactionBean.targetAccount.accountNumber}</code></p>
+                        <p style="margin: 0; font-size: 16px; color:#198754;"><strong>Current Balance Position:</strong> UGX <h:outputText value="#{transactionBean.targetAccount.balance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></p>
+                    </div>
+
+                    <!-- Deposit Posting Fields -->
+                    <div class="form-group">
+                        <p:outputLabel for="depositAmount" value="Deposit Value (UGX)"/>
+                        <p:inputNumber id="depositAmount" value="#{transactionBean.inputAmount}" min="500" required="true" requiredMessage="Deposit entry required." decimalPlaces="0" placeholder="e.g., 50000"/>
+                    </div>
+
+                    <div class="form-group">
+                        <p:outputLabel for="depositDesc" value="Transaction Narration Reference"/>
+                        <p:inputText id="depositDesc" value="#{transactionBean.inputDescription}" placeholder="e.g., Market vendor savings deposit"/>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <p:commandButton value="Post Balance Deposit" action="#{transactionBean.processDeposit}" update="depositForm :templateMsg" icon="pi pi-wallet" styleClass="ui-button-success" style="width:100%; padding: 8px 0;"/>
+                    </div>
+                </h:panelGroup>
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://w3.org"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/dashboard-template.xhtml">
+
+    <ui:define name="title">Credit Risk Analysis - Kimwanyi SACCO</ui:define>
+
+    <ui:define name="content">
+        <div style="margin-bottom: 25px;">
+            <h2 style="margin: 0; color: #212529;">Credit Risk &amp; Default Recovery Alerts</h2>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">Real-time review panel showing active loans with outstanding, un-repaid balances.</p>
+        </div>
+
+        <h:form id="overdueRiskForm">
+            <!-- PrimeFaces dynamic evaluation registry grid panel -->
+            <p:dataTable id="overdueTable" value="#{adminOverdueBean.arrearsPortfolio}" var="loan"
+                         paginator="true" rows="10" responsiveLayout="scroll"
+                         emptyMessage="Excellent! No active credit portfolios currently reflect an unpaid arrears status."
+                         styleClass="ui-datatable-striped">
+
+                <p:column headerText="Borrower Profile Name" sortBy="#{loan.member.fullName}">
+                    <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                </p:column>
+
+                <p:column headerText="National ID (NIN)">
+                    <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
+                </p:column>
+
+                <p:column headerText="Total Repayable (With 10%)">
+                    <h:outputText value="#{loan.totalRepayable}">
+                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Amount Cleared to Date">
+                    <h:outputText value="#{loan.amountRepaid}" style="color:#198754; font-weight:600;">
+                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Outstanding Arrears Risk Balance">
+                    <!-- Dynamic client calculation processing inline -->
+                    <h:outputText value="#{loan.totalRepayable - loan.amountRepaid}" style="color:#dc3545; font-weight:700;">
+                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Disbursed On">
+                    <h:outputText value="#{loan.actionedAt}">
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                    </h:outputText>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

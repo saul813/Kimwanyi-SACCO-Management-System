@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://w3.org"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/dashboard-template.xhtml">
+
+    <ui:define name="title">Loan Underwriting - Kimwanyi SACCO</ui:define>
+
+    <ui:define name="content">
+        <div style="margin-bottom: 25px;">
+            <h2 style="margin: 0; color: #212529;">Credit Underwriting Desk</h2>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">Review open borrowing requests. System calculates flat 10% interest automatically upon approval.</p>
+        </div>
+
+        <h:form id="loanUnderwritingForm">
+            <!-- PrimeFaces dynamic pipeline review grid layout panel components -->
+            <p:dataTable id="loansTable" value="#{adminLoanBean.getPendingLoans()}" var="loan"
+                         paginator="true" rows="10" responsiveLayout="scroll"
+                         emptyMessage="No pending credit files currently await review in the underwriting registry."
+                         styleClass="ui-datatable-striped">
+
+                <p:column headerText="Applicant Profile Name" sortBy="#{loan.member.fullName}">
+                    <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                </p:column>
+
+                <p:column headerText="National ID (NIN)">
+                    <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
+                </p:column>
+
+                <p:column headerText="Requested Principal">
+                    <h:outputText value="#{loan.getPrincipalAmount()}">
+                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Application Date">
+                    <h:outputText value="#{loan.appliedAt}">
+                        <f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Underwriting Status">
+                    <p:tag severity="warning" value="#{loan.status}"/>
+                </p:column>
+
+                <p:column headerText="Management Authorization" style="text-align: center; width: 220px;">
+                    <!-- Approve and Execute Credit Line Payout Button -->
+                    <p:commandButton value="Approve" icon="pi pi-check-circle"
+                                     action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'APPROVED')}"
+                                     update="loanUnderwritingForm :templateMsg"
+                                     styleClass="ui-button-success ui-button-sm" style="margin-right: 5px;"/>
+
+                    <!-- Reject Credit Request File Profile Entry Button -->
+                    <p:commandButton value="Reject" icon="pi pi-times-circle"
+                                     action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'REJECTED')}"
+                                     update="loanUnderwritingForm :templateMsg"
+                                     styleClass="ui-button-danger ui-button-sm"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

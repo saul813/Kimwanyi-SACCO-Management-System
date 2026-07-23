@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://w3.org"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/dashboard-template.xhtml">
+
+    <ui:define name="title">Member Management - Kimwanyi SACCO</ui:define>
+
+    <ui:define name="content">
+        <div style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h2 style="margin: 0; color: #212529;">Member Registry</h2>
+                <p style="margin: 5px 0 0 0; color: #6c757d;">Verify applications, inspect unique National IDs, or toggle operational status states.</p>
+            </div>
+        </div>
+
+        <h:form id="memberRegistryForm">
+            <!-- PrimeFaces Data Table Container Matrix component framework -->
+            <p:dataTable id="membersTable" value="#{adminMemberBean.allMembers}" var="user"
+                         paginator="true" rows="10" responsiveLayout="scroll"
+                         emptyMessage="No member configuration records match the search filter indices."
+                         styleClass="ui-datatable-striped">
+
+                <p:column headerText="Full Legal Name" sortBy="#{user.fullName}" filterBy="#{user.fullName}">
+                    <h:outputText value="#{user.fullName}" style="font-weight: 600;"/>
+                </p:column>
+
+                <p:column headerText="National ID (NIN)" filterBy="#{user.nationalId}">
+                    <h:outputText value="#{user.nationalId}" style="font-family: monospace; font-size: 14px;"/>
+                </p:column>
+
+                <p:column headerText="Phone Number">
+                    <h:outputText value="#{user.phoneNumber}"/>
+                </p:column>
+
+                <p:column headerText="Systemic Role">
+                    <p:tag severity="info" value="#{user.role}"/>
+                </p:column>
+
+                <p:column headerText="Account Status">
+                    <p:tag severity="#{user.status == 'ACTIVE' ? 'success' : (user.status == 'PENDING' ? 'warning' : 'danger')}"
+                           value="#{user.status}"/>
+                </p:column>
+
+                <p:column headerText="Administrative Actions" style="text-align: center; width: 180px;">
+                    <!-- Activate Account Action Trigger Button -->
+                    <p:commandButton title="Activate" icon="pi pi-check"
+                                     action="#{adminMemberBean.updateStatus(user.id, 'ACTIVE')}"
+                                     update="memberRegistryForm :templateMsg"
+                                     rendered="#{user.status != 'ACTIVE'}"
+                                     styleClass="ui-button-success ui-button-sm" style="margin-right: 5px;"/>
+
+                    <!-- Deactivate Profile Soft Deletion Action Trigger Button -->
+                    <p:commandButton title="Deactivate" icon="pi pi-ban"
+                                     action="#{adminMemberBean.updateStatus(user.id, 'DEACTIVATED')}"
+                                     update="memberRegistryForm :templateMsg"
+                                     rendered="#{user.status == 'ACTIVE'}"
+                                     styleClass="ui-button-danger ui-button-sm"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

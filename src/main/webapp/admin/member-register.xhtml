@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://w3.org"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/dashboard-template.xhtml">
+
+    <ui:define name="title">Onboard Member - Kimwanyi SACCO</ui:define>
+
+    <ui:define name="content">
+        <div style="margin-bottom: 25px;">
+            <h2 style="margin: 0; color: #212529;">Walk-In Registration Desk</h2>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">Manually onboard new members and verify unique National ID metrics.</p>
+        </div>
+
+        <p:panel header="New Member Enrollment Form" style="max-width: 600px;">
+            <h:form id="adminRegForm">
+
+                <div class="form-group">
+                    <p:outputLabel for="fullName" value="Full Legal Name"/>
+                    <p:inputText id="fullName" value="#{authBean.newUser.fullName}" required="true" requiredMessage="Full legal name is required." placeholder="e.g., Sarah Namubiru"/>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="nationalId" value="National ID (NIN)"/>
+                    <p:inputMask id="nationalId" value="#{authBean.newUser.nationalId}" mask="aa999999999aaa" required="true" requiredMessage="National ID code is mandatory." placeholder="e.g., CM92034100XYZ2" style="text-transform: uppercase;"/>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="phone" value="Mobile Phone Number"/>
+                    <p:inputText id="phone" value="#{authBean.newUser.phoneNumber}" required="true" requiredMessage="Phone contact is required." placeholder="e.g., 0701000000"/>
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="password" value="Assign Initial Gateway Password"/>
+                    <p:inputText id="password" value="#{authBean.newUser.password}" required="true" requiredMessage="Temporary access password is required." placeholder="e.g., TempPassword123"/>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <p:commandButton value="Onboard and Provision Profile" action="#{authBean.register}" update="adminRegForm :templateMsg" icon="pi pi-user-plus" styleClass="ui-button-primary" style="width:100%; padding: 8px 0;"/>
+                </div>
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

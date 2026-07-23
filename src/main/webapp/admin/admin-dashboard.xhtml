@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org"
+                template="/WEB-INF/templates/dashboard-template.xhtml">
+
+    <ui:define name="title">Admin Overview - Kimwanyi SACCO</ui:define>
+
+<ui:define name="content">
+<div style="margin-bottom: 25px;">
+    <h2 style="margin: 0; color: #212529;">Operational Summary</h2>
+    <p style="margin: 5px 0 0 0; color: #6c757d;">Real-time metrics for Kimwanyi SACCO corporate positions.</p>
+</div>
+
+<!-- Metric Grid Layer -->
+<div class="metric-grid">
+    <div class="metric-box" style="border-left-color: #0d6efd;">
+        <div class="metric-title">Registered Members</div>
+        <div class="metric-value">#{adminDashboardBean.totalMembersCount}</div>
+    </div>
+
+    <div class="metric-box" style="border-left-color: #ffc107;">
+        <div class="metric-title">Pending Loans</div>
+        <div class="metric-value">#{adminDashboardBean.pendingLoansCount}</div>
+    </div>
+
+    <div class="metric-box" style="border-left-color: #198754;">
+        <div class="metric-title">Total SACCO Savings</div>
+        <div class="metric-value">
+            UGX <h:outputText value="#{adminDashboardBean.totalSACCOSavings}"/>
+        </div>
+    </div>
+
+    <div class="metric-box" style="border-left-color: #dc3545;">
+        <div class="metric-title">Active Risk Portfolio</div>
+        <div class="metric-value">
+            UGX <h:outputText value="#{adminDashboardBean.activeIssuedCredit}"/>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Information Panel Notice -->
+<p:panel header="System Directives" style="margin-top: 20px;">
+    <p style="line-height: 1.6; margin: 0; color: #495057;">
+        Use the navigation menu sidebar pane to manage daily member profiles, approve open underwriting loan documentation matrices, or log cashier teller transaction vouchers.
+    </p>
+</p:panel>
+</ui:define>
+
+</ui:composition>
