@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title><ui:insert name="title">Admin Workspace - Kimwanyi SACCO</ui:insert></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="custom-style.css"/>
+    <style>
+        .app-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background-color: #212529; color: #fff; padding: 20px 0; flex-shrink: 0; }
+        .sidebar-brand { font-size: 20px; font-weight: bold; text-align: center; color: #0d6efd; padding-bottom: 20px; border-bottom: 1px solid #343a40; margin-bottom: 20px; }
+        .sidebar-menu { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; color: #adb5bd; text-decoration: none; padding: 12px 15px; border-radius: 6px; font-weight: 500; transition: all 0.2s; }
+        .sidebar-link:hover { background-color: #343a40; color: #fff; }
+        .main-workspace { flex-grow: 1; display: flex; flex-direction: column; background-color: #f8f9fa; }
+        .top-navbar { min-height: 65px; background-color: #fff; border-bottom: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; }
+        .content-body { padding: 30px; flex-grow: 1; }
+        .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-box { background: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 4px solid #0d6efd; }
+        .metric-title { font-size: 13px; text-transform: uppercase; color: #6c757d; font-weight: 600; letter-spacing: 0.5px; }
+        .metric-value { font-size: 24px; font-weight: 700; color: #212529; margin-top: 8px; }
+    </style>
+</h:head>
+<h:body>
+    <h:messages id="templateMsg"
+                globalOnly="false"
+                style="position:fixed; top:15px; right:15px; z-index:9999; list-style:none; padding:0; margin:0; max-width:360px;"
+                errorStyle="display:block; background:#f8d7da; color:#842029; border:1px solid #f5c2c7; border-radius:8px; padding:10px 12px; margin-bottom:8px;"
+                infoStyle="display:block; background:#d1e7dd; color:#0f5132; border:1px solid #badbcc; border-radius:8px; padding:10px 12px; margin-bottom:8px;"
+                warnStyle="display:block; background:#fff3cd; color:#664d03; border:1px solid #ffecb5; border-radius:8px; padding:10px 12px; margin-bottom:8px;"/>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Admin Workspace</div>
+            <nav class="sidebar-menu">
+                <h:outputLink value="#{request.contextPath}/admin/admin-dashboard.xhtml" styleClass="sidebar-link">Overview Dashboard</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/admin/member-list.xhtml" styleClass="sidebar-link">Member Registries</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/admin/member-register.xhtml" styleClass="sidebar-link">Register Member</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/admin/cash-deposit.xhtml" styleClass="sidebar-link">Post Cash Deposit</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/admin/cash-withdrawal.xhtml" styleClass="sidebar-link">Cash Withdrawal</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/admin/loan-application.xhtml" styleClass="sidebar-link">Loan Applications</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/admin/loan-overdue.xhtml" styleClass="sidebar-link">Overdue Loans</h:outputLink>
+            </nav>
+        </aside>
+
+        <main class="main-workspace">
+            <header class="top-navbar">
+                <div style="font-weight:600; font-size:18px; color:#495057;">
+                    Admin Area
+                </div>
+                <h:form>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <span style="font-weight:500;">Welcome, #{authBean.loggedInUser.fullName}</span>
+                        <h:commandButton value="Logout"
+                                         action="#{authBean.logout()}"
+                                         style="border:1px solid #dc3545; background:#ffffff; color:#dc3545; border-radius:6px; padding:8px 12px; font-weight:600; cursor:pointer;"/>
+                    </div>
+                </h:form>
+            </header>
+
+            <div class="content-body">
+                <ui:insert name="content"/>
+            </div>
+        </main>
+    </div>
+</h:body>
+</html>
