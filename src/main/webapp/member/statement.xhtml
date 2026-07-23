@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <title>Account Ledger Statement - Kimwanyi SACCO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="custom-style.css"/>
+    <style>
+        .portal-header { background-color: #0d6efd; color: #fff; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; }
+        .nav-toolbar { background: #e9ecef; padding: 15px 5%; display: flex; gap: 15px; }
+        .content-frame { padding: 40px 5%; }
+    </style>
+</h:head>
+<h:body>
+    <header class="portal-header">
+        <h2 style="margin:0;">Kimwanyi SACCO Portal</h2>
+    </header>
+    <div class="nav-toolbar">
+        <p:linkButton outcome="member-dashboard.xhtml" value="Dashboard Overview" icon="pi pi-home" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="loan-apply.xhtml" value="Apply for a Loan" icon="pi pi-file-edit" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="statement.xhtml" value="On-Demand Statements" icon="pi pi-file-pdf" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="profile.xhtml" value="My Profile Security" icon="pi pi-user" styleClass="ui-button-outlined"/>
+    </div>
+
+    <div class="content-frame">
+        <h2 style="margin:0 0 10px 0; color:#212529;">On-Demand Financial Ledger Account Statement</h2>
+        <p style="margin:0 0 25px 0; color:#6c757d;">Verify historical automated transactional entries, cash deposits, and monthly yield credits.</p>
+
+        <!-- Dynamic History Table Component Container -->
+        <p:dataTable value="#{memberPortalBean.statementHistory}" var="tx" paginator="true" rows="15" responsiveLayout="scroll" styleClass="ui-datatable-striped">
+            <p:column headerText="Transaction Timestamp" width="180">
+                <h:outputText value="#{tx.createdAt}"><f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/></h:outputText>
+            </p:column>
+
+            <p:column headerText="Reference Narration Description">
+                <h:outputText value="#{tx.description}"/>
+            </p:column>
+
+            <p:column headerText="Action Type" width="150">
+                <p:tag severity="#{tx.transactionType == 'DEPOSIT' ? 'success' : (tx.transactionType == 'INTEREST_CREDIT' ? 'info' : 'danger')}" value="#{tx.transactionType}"/>
+            </p:column>
+
+            <p:column headerText="Value Amount (UGX)" width="180" style="text-align:right;">
+                <h:outputText value="#{tx.amount}" style="font-weight:600; font-family:monospace; color:#{tx.transactionType == 'WITHDRAWAL' ? 'dc3545' : '198754'};">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputText>
+            </p:column>
+        </p:dataTable>
+    </div>
+</h:body>
+</html>

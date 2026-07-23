@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <title>Apply for Credit Line - Kimwanyi SACCO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="custom-style.css"/>
+    <style>
+        .portal-header { background-color: #0d6efd; color: #fff; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; }
+        .nav-toolbar { background: #e9ecef; padding: 15px 5%; display: flex; gap: 15px; }
+        .content-frame { padding: 40px 5%; max-width: 600px; }
+    </style>
+</h:head>
+<h:body>
+    <p:growl id="loanGrowl" showDetail="true" life="4000"/>
+    <header class="portal-header">
+        <h2 style="margin:0;">Kimwanyi SACCO Portal</h2>
+    </header>
+    <div class="nav-toolbar">
+        <p:linkButton outcome="member-dashboard.xhtml" value="Dashboard Overview" icon="pi pi-home" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="loan-apply.xhtml" value="Apply for a Loan" icon="pi pi-file-edit" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="statement.xhtml" value="On-Demand Statements" icon="pi pi-file-pdf" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="profile.xhtml" value="My Profile Security" icon="pi pi-user" styleClass="ui-button-outlined"/>
+    </div>
+
+    <div class="content-frame">
+        <p:panel header="Request New Community Empowerment Loan">
+            <h:form id="loanRequestForm">
+                <div style="background-color:#eff6ff; padding:15px; border-radius:6px; margin-bottom:20px; border:1px solid #bfdbfe; font-size:14px; line-height:1.5; color:#1e40af;">
+                    <strong>Underwriting Notice Rules:</strong> The maximum credit ceiling allowed is <strong>3x your total active savings balance</strong>. Fresh borrowing is blocked if you currently hold an unresolved active loan. Upon formal approval, a predictable flat 10% interest rate is applied to the requested principal.
+                </div>
+
+                <div class="form-group">
+                    <p:outputLabel for="loanAmount" value="Desired Principal Value (UGX)"/>
+                    <p:inputNumber id="loanAmount" value="#{memberPortalBean.requestedLoanPrincipal}" min="5000" decimalPlaces="0" required="true" requiredMessage="Please specify a valid loan principal amount value." placeholder="e.g., 300000"/>
+                </div>
+
+                <div style="margin-top:25px;">
+                    <p:commandButton value="Submit Online Credit Application" action="#{memberPortalBean.applyForLoan}" update="loanRequestForm :loanGrowl" icon="pi pi-send" styleClass="ui-button-raised ui-button-primary" style="width:100%; padding:8px 0;"/>
+                </div>
+            </h:form>
+        </p:panel>
+    </div>
+</h:body>
+</html>

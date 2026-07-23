@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <title>My Profile Security - Kimwanyi SACCO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="custom-style.css"/>
+    <style>
+        .portal-header { background-color: #0d6efd; color: #fff; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; }
+        .nav-toolbar { background: #e9ecef; padding: 15px 5%; display: flex; gap: 15px; }
+        .content-frame { padding: 40px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #dee2e6; font-size: 15px; }
+        .info-label { color: #6c757d; font-weight: 500; }
+        .info-value { color: #212529; font-weight: 600; }
+    </style>
+</h:head>
+<h:body>
+    <p:growl id="profileGrowl" showDetail="true" life="4000"/>
+
+    <header class="portal-header">
+        <h2 style="margin:0;">Kimwanyi SACCO Portal</h2>
+    </header>
+
+    <div class="nav-toolbar">
+        <p:linkButton outcome="member-dashboard.xhtml" value="Dashboard Overview" icon="pi pi-home" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="loan-apply.xhtml" value="Apply for a Loan" icon="pi pi-file-edit" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="statement.xhtml" value="On-Demand Statements" icon="pi pi-file-pdf" styleClass="ui-button-outlined"/>
+        <p:linkButton outcome="profile.xhtml" value="My Profile Security" icon="pi pi-user" styleClass="ui-button-outlined"/>
+    </div>
+
+    <div class="content-frame">
+        <!-- Left Column: Registry Credentials Metadata Card -->
+
+        <p:card title="Profile Details">
+        <div style="margin-top: 15px;">
+            <div class="info-row">
+                <span class="info-label">Full Account Name</span>
+                <span class="info-value">#{authBean.loggedInUser.fullName}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">National ID (NIN)</span>
+                <span class="info-value" style="font-family: monospace;">#{authBean.loggedInUser.nationalId}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Registered Mobile Number</span>
+                <span class="info-value">#{authBean.loggedInUser.phoneNumber}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Portal System Access Role</span>
+                <p:tag severity="info" value="#{authBean.loggedInUser.role}"/>
+            </div>
+            <div class="info-row" style="border-bottom: none;">
+                <span class="info-label">Account Verification State</span>
+                <p:tag severity="success" value="#{authBean.loggedInUser.status}"/>
+            </div>
+        </div>
+        </p:card>
+
+    <!-- Right Column: Interactive Password Mutation Handling Card Form -->
+    <p:panel header="Modify Portal Access Password">
+        <h:form id="passwordModificationForm">
+
+            <div class="form-group">
+                <p:outputLabel for="currentPassword" value="Type Your Current Password"/>
+                <p:password id="currentPassword" value="#{memberPortalBean.currentPasswordInput}"
+                            required="true" requiredMessage="Verification of current password is required."
+                            toggleMask="true" placeholder="••••••••"/>
+            </div>
+
+            <div class="form-group">
+                <p:outputLabel for="newPassword" value="Create Your New Security Password"/>
+                <p:password id="newPassword" value="#{memberPortalBean.newPasswordInput}"
+                            required="true" requiredMessage="New password parameters are mandatory."
+                            feedback="true" inline="true" toggleMask="true" placeholder="••••••••"/>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <p:commandButton value="Commit Credentials Change"
+                                 action="#{memberPortalBean.updateProfilePassword}"
+                                 update="passwordModificationForm :profileGrowl"
+                                 icon="pi pi-lock" styleClass="ui-button-raised ui-button-warning"
+                                 style="width:100%; padding:8px 0;"/>
+            </div>
+
+        </h:form>
+    </p:panel>
+</div>
+</h:body>
+        </html>
