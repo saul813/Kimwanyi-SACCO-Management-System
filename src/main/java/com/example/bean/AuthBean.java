@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -22,7 +23,7 @@ public class AuthBean implements Serializable {
     private User loggedInUser;
 
     // Login input parameters
-    private String loginNationalId;
+    private String loginEmail;
     private String loginPassword;
 
     @PostConstruct
@@ -44,6 +45,8 @@ public class AuthBean implements Serializable {
         try {
             String formattedNIN = newUser.getNationalId().trim().toUpperCase();
             newUser.setNationalId(formattedNIN);
+            String formattedEmail = newUser.getEmail().trim().toLowerCase();
+            newUser.setEmail(formattedEmail);
 
             User existingProfile = userDAO.findByNationalId(formattedNIN);
             if (existingProfile != null) {
@@ -54,14 +57,25 @@ public class AuthBean implements Serializable {
                 return null;
             }
 
+            User existingEmailProfile = userDAO.findByEmail(formattedEmail);
+            if (existingEmailProfile != null) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR, "Registration Failed",
+                        "A member with this email address is already registered."
+                ));
+                return null;
+            }
+
             userDAO.saveUser(newUser);
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_INFO, "Submission Successful",
-                    "Account created! Please wait for administrative verification."
+                    "Account created and submitted for review. Please login after admin approval."
             ));
+            Flash flash = context.getExternalContext().getFlash();
+            flash.setKeepMessages(true);
 
             resetRegistrationForm();
-            return "login?faces-redirect=true";
+            return "/login?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
             context.addMessage(null, new FacesMessage(
@@ -77,13 +91,13 @@ public class AuthBean implements Serializable {
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
-            String formattedNIN = loginNationalId.trim().toUpperCase();
-            User user = userDAO.findByNationalId(formattedNIN);
+            String formattedEmail = loginEmail.trim().toLowerCase();
+            User user = userDAO.findByEmail(formattedEmail);
 
             // Audit Check 1: User existence and password validation
             if (user == null || !user.getPassword().equals(loginPassword)) {
                 context.addMessage(null, new FacesMessage(
-                        FacesMessage.SEVERITY_ERROR, "Authentication Failed", "Invalid National ID or Password."
+                        FacesMessage.SEVERITY_ERROR, "Authentication Failed", "Invalid Email or Password."
                 ));
                 return null;
             }
@@ -91,7 +105,8 @@ public class AuthBean implements Serializable {
             // Audit Check 2: Account activation guard
             if ("PENDING".equals(user.getStatus())) {
                 context.addMessage(null, new FacesMessage(
-                        FacesMessage.SEVERITY_WARN, "Access Denied", "Your account application is still pending admin review."
+                        FacesMessage.SEVERITY_WARN, "Pending Approval",
+                        "Your registration was received. Please wait for admin approval before accessing the member dashboard."
                 ));
                 return null;
             } else if ("DEACTIVATED".equals(user.getStatus())) {
@@ -126,7 +141,7 @@ public class AuthBean implements Serializable {
     public String logout() {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         this.loggedInUser = null;
-        this.loginNationalId = null;
+        this.loginEmail = null;
         this.loginPassword = null;
         return "/login?faces-redirect=true";
     }
@@ -138,8 +153,8 @@ public class AuthBean implements Serializable {
     public User getLoggedInUser() { return loggedInUser; }
     public void setLoggedInUser(User loggedInUser) { this.loggedInUser = loggedInUser; }
 
-    public String getLoginNationalId() { return loginNationalId; }
-    public void setLoginNationalId(String loginNationalId) { this.loginNationalId = loginNationalId; }
+    public String getLoginEmail() { return loginEmail; }
+    public void setLoginEmail(String loginEmail) { this.loginEmail = loginEmail; }
 
     public String getLoginPassword() { return loginPassword; }
     public void setLoginPassword(String loginPassword) { this.loginPassword = loginPassword; }
