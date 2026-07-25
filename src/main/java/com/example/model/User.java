@@ -19,6 +19,9 @@ public class User implements Serializable {
     @Column(name = "national_id", nullable = false, unique = true, length = 14)
     private String nationalId;
 
+    @Column(name = "email", nullable = false, unique = true, length = 120)
+    private String email;
+
     @Column(name = "phone_number", nullable = false, length = 15)
     private String phoneNumber;
 
@@ -49,6 +52,9 @@ public class User implements Serializable {
 
     public String getNationalId() { return nationalId; }
     public void setNationalId(String nationalId) { this.nationalId = nationalId; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
