@@ -43,6 +43,10 @@ public class Loan implements Serializable {
     @Column(name = "actioned_at")
     private Date actionedAt; // Tracks when a manager approved or rejected the file
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "due_date")
+    private Date dueDate; // Used to identify genuinely overdue loans after approval
+
     public enum LoanStatus {
         PENDING, APPROVED, REJECTED, FULLY_REPAID
     }
@@ -76,4 +80,7 @@ public class Loan implements Serializable {
 
     public Date getActionedAt() { return actionedAt; }
     public void setActionedAt(Date actionedAt) { this.actionedAt = actionedAt; }
+
+    public Date getDueDate() { return dueDate; }
+    public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
 }
