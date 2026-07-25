@@ -24,6 +24,8 @@ public class AdminMemberBean implements Serializable {
     @Inject private AccountDAO accountDAO;
 
     private List<User> allMembers;
+    private boolean registryAvailable = true;
+    private String registryStatusMessage = "Member registry loaded.";
 
     @PostConstruct
     public void init() {
@@ -31,7 +33,16 @@ public class AdminMemberBean implements Serializable {
     }
 
     public void reloadRegistry() {
-        this.allMembers = userDAO.findAllUsers();
+        try {
+            this.allMembers = userDAO.findAllMembers();
+            this.registryAvailable = true;
+            this.registryStatusMessage = "Member registry loaded.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.allMembers = List.of();
+            this.registryAvailable = false;
+            this.registryStatusMessage = "Unable to load member registry. Check database table structure and server logs.";
+        }
     }
 
     public void updateStatus(Long userId, String targetStatus) {
@@ -67,4 +78,7 @@ public class AdminMemberBean implements Serializable {
     }
 
     public List<User> getAllMembers() { return allMembers; }
+    public int getMemberCount() { return allMembers != null ? allMembers.size() : 0; }
+    public boolean isRegistryAvailable() { return registryAvailable; }
+    public String getRegistryStatusMessage() { return registryStatusMessage; }
 }
