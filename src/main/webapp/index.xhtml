@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+
+<h:head>
+    <title>Kimwanyi SACCO - Savings and Credit Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="custom-style.css"/>
+    <style>
+        .landing-page {
+            min-height: 100vh;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 12% 8%, rgba(0, 96, 65, 0.16), transparent 28%),
+                radial-gradient(circle at 86% 18%, rgba(212, 160, 23, 0.18), transparent 30%),
+                linear-gradient(135deg, #ffffff 0%, #f4f6f5 48%, #ffffff 100%);
+        }
+
+        .landing-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 7%;
+            background:
+                radial-gradient(circle at top left, rgba(212, 160, 23, 0.16), transparent 30%),
+                linear-gradient(135deg, rgba(8, 31, 51, 0.98), rgba(0, 96, 65, 0.96));
+            border-bottom: 3px solid #d4a017;
+            box-shadow: 0 14px 36px rgba(8, 31, 51, 0.18);
+            backdrop-filter: blur(18px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 12px 22px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s;
+        }
+
+        .brand-button:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .brand-primary {
+            background: #d4a017;
+            border: 1px solid #d4a017;
+            color: #081f33;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.20);
+        }
+
+        .brand-primary:hover {
+            background: #f0bd2f;
+            border-color: #f0bd2f;
+            color: #081f33;
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
+        }
+
+        .brand-secondary {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.52);
+            color: #ffffff;
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+            text-decoration: none;
+        }
+
+        .brand-logo-shell {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff8df;
+            border: 2px solid rgba(212, 160, 23, 0.72);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.20);
+            overflow: hidden;
+        }
+
+        .brand-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.05;
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+            color: #f8d66d;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+
+        .nav-actions-wrap {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            flex: 1.4;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #eef7f2;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 750;
+            letter-spacing: 0.15px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            position: relative;
+            border: 1px solid transparent;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: rgba(212, 160, 23, 0.34);
+            color: #ffffff;
+            box-shadow: inset 0 0 0 1px rgba(212, 160, 23, 0.14);
+        }
+
+        .nav-link.active::after {
+            content: "";
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            bottom: 5px;
+            height: 2px;
+            border-radius: 999px;
+            background: #d4a017;
+        }
+
+        .nav-register {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #d4a017;
+            color: #081f33;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            padding: 11px 24px;
+            border-radius: 999px;
+            border: 1px solid #d4a017;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+
+        .nav-register:hover {
+            background: #f0bd2f;
+            transform: translateY(-1px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+        }
+
+        .nav-login {
+            margin-left: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .nav-login:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 0.82fr);
+            gap: 0;
+            align-items: center;
+            padding: 76px 7% 64px;
+            position: relative;
+            min-height: 500px;
+            color: #ffffff;
+            background: #081f33;
+            border-bottom: 5px solid #d4a017;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(8, 31, 51, 0.92) 0%, rgba(0, 96, 65, 0.78) 46%, rgba(8, 31, 51, 0.40) 100%),
+                radial-gradient(circle at 18% 20%, rgba(212, 160, 23, 0.22), transparent 32%);
+            z-index: 0;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 42px 42px;
+            opacity: 0.45;
+            z-index: 1;
+        }
+
+        .hero > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-slides,
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+        }
+
+        .hero-slides {
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .hero-slide {
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transform: scale(1.06);
+            animation: heroFade 42s infinite;
+        }
+
+        .hero-slide:nth-child(1) {
+            background-image: url("#{request.contextPath}/resources/images/hero/boda_boda.png");
+            animation-delay: 0s;
+        }
+
+        .hero-slide:nth-child(2) {
+            background-image: url("#{request.contextPath}/resources/images/hero/teachers.png");
+            animation-delay: 6s;
+        }
+
+        .hero-slide:nth-child(3) {
+            background-image: url("#{request.contextPath}/resources/images/hero/mechanics.png");
+            animation-delay: 12s;
+        }
+
+        .hero-slide:nth-child(4) {
+            background-image: url("#{request.contextPath}/resources/images/hero/farmer.png");
+            animation-delay: 18s;
+        }
+
+        .hero-slide:nth-child(5) {
+            background-image: url("#{request.contextPath}/resources/images/hero/shop_keeper.png");
+            animation-delay: 24s;
+        }
+
+        .hero-slide:nth-child(6) {
+            background-image: url("#{request.contextPath}/resources/images/hero/banana_lady.png");
+            animation-delay: 30s;
+        }
+
+        .hero-slide:nth-child(7) {
+            background-image: url("#{request.contextPath}/resources/images/hero/members.png");
+            animation-delay: 36s;
+        }
+
+        @keyframes heroFade {
+            0% {
+                opacity: 0;
+                transform: scale(1.06);
+            }
+            5%,
+            14% {
+                opacity: 1;
+            }
+            20%,
+            100% {
+                opacity: 0;
+                transform: scale(1.12);
+            }
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff8df;
+            background: rgba(212, 160, 23, 0.18);
+            border: 1px solid rgba(212, 160, 23, 0.42);
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            max-width: 840px;
+            font-size: clamp(36px, 4.8vw, 58px);
+            line-height: 1.06;
+            margin: 0 0 20px;
+            letter-spacing: -1.8px;
+            color: #ffffff;
+            text-shadow: 0 4px 18px rgba(0, 0, 0, 0.30);
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #e7edf0;
+            margin: 0 0 30px;
+            max-width: 680px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 34px;
+        }
+
+        .trust-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(120px, 1fr));
+            gap: 14px;
+            max-width: 620px;
+        }
+
+        .trust-item {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(12px);
+        }
+
+        .trust-number {
+            font-size: 22px;
+            font-weight: 800;
+            color: #f8d66d;
+            margin-bottom: 4px;
+        }
+
+        .trust-label {
+            font-size: 13px;
+            color: #e7edf0;
+            font-weight: 600;
+        }
+
+        .section {
+            padding: 64px 7% 82px;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 34px;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 10px;
+            font-size: clamp(28px, 3vw, 38px);
+            color: #242424;
+            letter-spacing: -0.8px;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-top: 4px solid #d4a017;
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 14px 34px rgba(16, 32, 51, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 46px rgba(16, 32, 51, 0.10);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #eef7f2, #fff4cf);
+            color: #006041;
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 10px;
+            color: #081f33;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: #6c757d;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .process-section {
+            background:
+                radial-gradient(circle at 88% 12%, rgba(212, 160, 23, 0.13), transparent 28%),
+                linear-gradient(180deg, rgba(255,255,255,0), rgba(244,246,245,0.98));
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .process-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 22px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 14px 34px rgba(16, 32, 51, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .process-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 96, 65, 0.18);
+            box-shadow: 0 22px 46px rgba(16, 32, 51, 0.10);
+        }
+
+        .process-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #006041, #081f33);
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .process-card h3 {
+            margin: 0 0 8px;
+            color: #081f33;
+        }
+
+        .process-card p {
+            margin: 0;
+            color: #6c757d;
+            line-height: 1.55;
+            font-size: 15px;
+        }
+
+        .cta-band {
+            margin: 0 7% 60px;
+            background:
+                radial-gradient(circle at top right, rgba(212, 160, 23, 0.24), transparent 34%),
+                linear-gradient(135deg, #006041, #081f33);
+            color: #fff;
+            border-radius: 30px;
+            padding: 38px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 24px 58px rgba(8, 31, 51, 0.18);
+        }
+
+        .cta-band h2 {
+            margin: 0 0 8px;
+        }
+
+        .cta-band p {
+            margin: 0;
+            color: #cbd5e1;
+        }
+
+        .landing-footer {
+            padding: 42px 7% 30px;
+            color: #cbd5e1;
+            background:
+                radial-gradient(circle at top left, rgba(212, 160, 23, 0.12), transparent 26%),
+                #081f33;
+            font-size: 14px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.4fr repeat(3, 1fr);
+            gap: 28px;
+            align-items: start;
+        }
+
+        .footer-grid h4,
+        .footer-grid p {
+            margin-top: 0;
+        }
+
+        .footer-grid h4 {
+            color: #ffffff;
+            margin-bottom: 12px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-grid h4::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 34px;
+            height: 2px;
+            border-radius: 999px;
+            background: #d4a017;
+        }
+
+        .footer-grid a,
+        .footer-grid span {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-bottom: 8px;
+        }
+
+        .footer-grid a:hover {
+            color: #f8d66d;
+        }
+
+        .footer-bottom {
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding-top: 56px;
+                min-height: 460px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-band,
+            .landing-nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .brand-area,
+            .nav-actions-wrap {
+                width: 100%;
+            }
+
+            .nav-actions-wrap {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+            .nav-actions,
+            .hero-actions {
+                width: 100%;
+            }
+
+            .nav-actions .brand-button,
+            .hero-actions .brand-button {
+                width: 100%;
+            }
+
+            .trust-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="landing-page">
+        <header class="landing-nav">
+            <div class="brand-area">
+                <a href="#home" class="brand">
+                    <span class="brand-logo-shell">
+                        <h:graphicImage library="images" name="logo.png" styleClass="brand-logo" alt="Kimwanyi SACCO logo"/>
+                    </span>
+                    <span class="brand-text">
+                        <span>Kimwanyi SACCO</span>
+                        <span class="brand-subtitle">Savings &amp; Credit</span>
+                    </span>
+                </a>
+            </div>
+
+            <nav class="nav-actions-wrap" aria-label="Main navigation">
+                <a href="#home" class="nav-link active">
+                    Home
+                </a>
+                <a href="#about" class="nav-link">
+                    About
+                </a>
+                <h:outputLink value="#{request.contextPath}/login.xhtml" styleClass="nav-link nav-login">
+                    Login
+                </h:outputLink>
+                <h:outputLink value="#{request.contextPath}/register.xhtml" styleClass="nav-register">
+                    Register
+                </h:outputLink>
+            </nav>
+        </header>
+
+        <main>
+            <section id="home" class="hero">
+                <div class="hero-slides" aria-hidden="true">
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                </div>
+
+                <div>
+                    <div class="eyebrow">
+                        Built for everyday SACCO members
+                    </div>
+
+                    <h1>Financial services for boda riders, teachers, traders, farmers, and local workers.</h1>
+                    <p>
+                        Kimwanyi SACCO helps members save consistently, access fair credit,
+                        and manage account records through a secure digital portal.
+                    </p>
+
+                    <div class="hero-actions">
+                        <h:outputLink value="#{request.contextPath}/register.xhtml" styleClass="brand-button brand-primary">Apply for Membership</h:outputLink>
+                        <h:outputLink value="#{request.contextPath}/login.xhtml" styleClass="brand-button brand-secondary">Member Login</h:outputLink>
+                    </div>
+
+                    <div class="trust-row">
+                        <div class="trust-item">
+                            <div class="trust-number">24/7</div>
+                            <div class="trust-label">Portal access</div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-number">3x</div>
+                            <div class="trust-label">Savings-based loan ceiling</div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-number">UGX</div>
+                            <div class="trust-label">Local savings management</div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <section id="about" class="section">
+                <div class="section-heading">
+                    <h2>About Kimwanyi SACCO</h2>
+                    <p>
+                        Kimwanyi SACCO is a member-focused savings and credit platform built to simplify
+                        onboarding, savings tracking, loan access, and financial transparency for the community.
+                    </p>
+                </div>
+
+                <div class="feature-grid">
+                    <article class="feature-card">
+                        <div class="feature-icon">M</div>
+                        <h3>Member onboarding</h3>
+                        <p>Prospective members can submit their registration details for administrative review and activation.</p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">S</div>
+                        <h3>Savings management</h3>
+                        <p>Cashiers can post deposits and withdrawals while enforcing operational balance controls.</p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">L</div>
+                        <h3>Loan processing</h3>
+                        <p>Members apply online, and managers review credit requests using savings-based eligibility rules.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section process-section">
+                <div class="section-heading">
+                    <h2>Simple digital access for every member</h2>
+                    <p>
+                        From joining the SACCO to applying for credit, the portal keeps the workflow clear,
+                        traceable, and easier for both members and administrators to manage.
+                    </p>
+                </div>
+
+                <div class="process-grid">
+                    <article class="process-card">
+                        <div class="process-number">1</div>
+                        <h3>Create account</h3>
+                        <p>Submit your membership details through the online registration form.</p>
+                    </article>
+
+                    <article class="process-card">
+                        <div class="process-number">2</div>
+                        <h3>Save consistently</h3>
+                        <p>Track deposits, withdrawals, and account activity from your member dashboard.</p>
+                    </article>
+
+                    <article class="process-card">
+                        <div class="process-number">3</div>
+                        <h3>Request credit</h3>
+                        <p>Apply for loans using eligibility rules connected to your savings record.</p>
+                    </article>
+
+                    <article class="process-card">
+                        <div class="process-number">4</div>
+                        <h3>Monitor progress</h3>
+                        <p>Review repayments, statements, and profile updates in one secure portal.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="cta-band">
+                <div>
+                    <h2>Ready to access your SACCO services?</h2>
+                    <p>Login if you already have an active account, or register to start your membership application.</p>
+                </div>
+                <div class="nav-actions">
+                    <h:outputLink value="#{request.contextPath}/login.xhtml" styleClass="brand-button brand-secondary">Login</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/register.xhtml" styleClass="brand-button brand-primary">Register</h:outputLink>
+                </div>
+            </section>
+        </main>
+
+        <footer class="landing-footer">
+            <div class="footer-grid">
+                <div>
+                    <h4>Kimwanyi SACCO</h4>
+                    <p>
+                        A secure savings and credit management system supporting member onboarding,
+                        savings visibility, loan processing, and transparent account records.
+                    </p>
+                </div>
+
+                <div>
+                    <h4>Portal</h4>
+                    <h:outputLink value="#{request.contextPath}/login.xhtml">Member login</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/register.xhtml">Apply to join</h:outputLink>
+                    <a href="#about">About the SACCO</a>
+                </div>
+
+                <div>
+                    <h4>Services</h4>
+                    <span>Savings management</span>
+                    <span>Loan applications</span>
+                    <span>Account statements</span>
+                </div>
+
+                <div>
+                    <h4>Trust</h4>
+                    <span>Secure member access</span>
+                    <span>Admin-reviewed records</span>
+                    <span>Transparent transactions</span>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                © 2026 Kimwanyi SACCO. Secure savings and credit management system.
+            </div>
+        </footer>
+    </div>
+</h:body>
+</html>
