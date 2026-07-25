@@ -63,4 +63,13 @@ public class AccountDAO {
             return null;
         }
     }
+
+    public List<SavingsAccount> findAllAccounts() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM SavingsAccount ORDER BY accountNumber ASC", SavingsAccount.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
 }

@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -69,6 +70,33 @@ public class LoanDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public List<Loan> findApprovedOutstandingLoans() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "FROM Loan WHERE status = :status AND amountRepaid < totalRepayable ORDER BY actionedAt ASC",
+                            Loan.class)
+                    .setParameter("status", Loan.LoanStatus.APPROVED)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+    public List<Loan> findOverdueLoans(Date today) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "FROM Loan WHERE status = :status AND amountRepaid < totalRepayable AND dueDate < :today ORDER BY dueDate ASC",
+                            Loan.class)
+                    .setParameter("status", Loan.LoanStatus.APPROVED)
+                    .setParameter("today", today)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
         }
     }
 

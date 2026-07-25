@@ -20,6 +20,7 @@ public class UserDAO {
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
+            throw new IllegalStateException("Unable to save user profile", e);
         }
     }
 
@@ -45,13 +46,39 @@ public class UserDAO {
         }
     }
 
+    // Looks up users by email for portal authentication
+    public User findByEmail(String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<User> query = session.createQuery("FROM User WHERE lower(email) = :email", User.class);
+            query.setParameter("email", email.toLowerCase());
+            return query.uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Pulls all registered users for administrative review dashboards
     public List<User> findAllUsers() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM User", User.class).list();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return List.of();
+        }
+    }
+
+    // Pulls member accounts only for the Member Registry page
+    public List<User> findAllMembers() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "FROM User WHERE role = :role ORDER BY status ASC, fullName ASC",
+                            User.class)
+                    .setParameter("role", User.Role.MEMBER)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
         }
     }
 }
