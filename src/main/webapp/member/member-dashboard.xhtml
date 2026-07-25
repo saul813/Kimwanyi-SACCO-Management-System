@@ -8,16 +8,16 @@
     <ui:define name="title">Member Dashboard - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">Member Dashboard</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">Savings overview, credit applications, and member account status.</p>
+        <div class="member-page-header">
+            <h2>Welcome to your SACCO dashboard</h2>
+            <p>Track your savings, review credit activity, and stay updated on your member account.</p>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:30px;">
-            <section class="member-card" style="border-left:5px solid #198754;">
+        <div class="member-dashboard-grid">
+            <section class="member-card member-card-highlight">
                 <h3>My Savings Account</h3>
-                <p style="font-size:14px; color:#6c757d; margin:0 0 10px 0;">Account Ref Number: <code>#{memberPortalBean.activeAccountNumber}</code></p>
-                <h2 style="font-size:32px; color:#198754; margin:0;">
+                <p class="member-muted" style="font-size:14px; margin:0 0 10px 0;">Account Ref Number: <code>#{memberPortalBean.activeAccountNumber}</code></p>
+                <h2 class="member-balance">
                     UGX <h:outputText value="#{memberPortalBean.activeAccountBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText>
                 </h2>
                 <h:panelGroup rendered="#{not memberPortalBean.hasActiveAccount}">
@@ -25,30 +25,52 @@
                         <strong>Savings account pending:</strong> Your member profile is active, but no savings ledger has been provisioned yet.
                     </div>
                 </h:panelGroup>
-                <p style="font-size:13px; color:#6c757d; margin-top:15px; border-top:1px solid #dee2e6; padding-top:10px;">Minimum Balance Threshold: UGX 20,000</p>
+                <p class="member-muted" style="font-size:13px; margin-top:15px; border-top:1px solid #edf0f2; padding-top:10px;">Minimum Balance Threshold: UGX 20,000</p>
+                <p class="member-interest" style="font-size:13px; margin:6px 0 0 0;">Estimated monthly interest: UGX <h:outputText value="#{memberPortalBean.estimatedMonthlySavingsInterest}"><f:convertNumber pattern="#,##0.00"/></h:outputText></p>
+                <div class="member-actions">
+                    <h:link outcome="/member/savings.xhtml" value="Deposit / Withdraw" styleClass="member-action-primary"/>
+                    <h:link outcome="/member/statement.xhtml" value="View History" styleClass="member-action-secondary"/>
+                </div>
             </section>
 
-            <section class="member-card">
+            <section class="member-card member-card-accent">
                 <h3>My Credit Applications Portfolio</h3>
-                <table class="simple-table">
-                    <thead>
-                    <tr>
-                        <th>Principal Requested</th>
-                        <th>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <ui:repeat value="#{memberPortalBean.personalLoans}" var="loan">
-                        <tr>
-                            <td>UGX <h:outputText value="#{loan.principalAmount}"><f:convertNumber pattern="#,##0"/></h:outputText></td>
-                            <td><span class="status-pill">#{loan.status}</span></td>
-                        </tr>
-                    </ui:repeat>
-                    </tbody>
-                </table>
-                <h:panelGroup rendered="#{empty memberPortalBean.personalLoans}">
-                    <p style="color:#6c757d; margin-bottom:0;">You have not requested any loans yet.</p>
+                <h:panelGroup rendered="#{not empty memberPortalBean.activeLoan}">
+                    <div style="background:#fff3cd; color:#664d03; border:1px solid #ffecb5; padding:12px; border-radius:8px; margin-bottom:14px;">
+                        Active loan outstanding: <strong>UGX <h:outputText value="#{memberPortalBean.activeLoanOutstandingBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                    </div>
                 </h:panelGroup>
+                <div class="table-scroll">
+                    <table class="simple-table">
+                        <thead>
+                        <tr>
+                            <th>Principal Requested</th>
+                            <th>Total Payable</th>
+                            <th>Repaid</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{memberPortalBean.personalLoans}" var="loan">
+                            <tr>
+                                <td>UGX <h:outputText value="#{loan.principalAmount}"><f:convertNumber pattern="#,##0"/></h:outputText></td>
+                                <td>UGX <h:outputText value="#{loan.totalRepayable}"><f:convertNumber pattern="#,##0"/></h:outputText></td>
+                                <td>UGX <h:outputText value="#{loan.amountRepaid}"><f:convertNumber pattern="#,##0"/></h:outputText></td>
+                                <td><h:outputText value="#{loan.dueDate}"><f:convertDateTime pattern="dd-MMM-yyyy"/></h:outputText></td>
+                                <td><span class="status-pill">#{loan.status}</span></td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
+                <h:panelGroup rendered="#{empty memberPortalBean.personalLoans}">
+                    <p class="member-muted" style="margin-bottom:0;">You have not requested any loans yet.</p>
+                </h:panelGroup>
+                <div class="member-actions">
+                    <h:link outcome="/member/loan-apply.xhtml" value="Apply for Loan" styleClass="member-action-secondary"/>
+                    <h:link outcome="/member/loan-repay.xhtml" value="Repay Loan" styleClass="member-action-primary"/>
+                </div>
             </section>
         </div>
     </ui:define>
