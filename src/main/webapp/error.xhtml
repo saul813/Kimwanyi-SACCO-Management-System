@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+
+<h:head>
+    <title>System Alert - Kimwanyi SACCO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="custom-style.css"/>
+</h:head>
+<h:body>
+    <main class="auth-container">
+        <section class="auth-card">
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 64px; color: #dc3545; line-height: 1;">!</div>
+            </div>
+
+            <h2>Navigation Interrupt</h2>
+            <p>The action could not be verified, or you do not have permission to view this directory space.</p>
+
+            <div style="background-color:#fff3cd; color:#664d03; padding:12px; border-radius:6px; font-size:13px; margin:20px 0; border:1px solid #ffe69c; line-height:1.5;">
+                <strong>Security Guard Notice:</strong> Sessions expire automatically after 30 minutes of idle time. Please log back in to refresh your authorization tokens.
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h:outputLink value="#{request.contextPath}/login.xhtml"
+                              styleClass="login-submit-link"
+                              style="background:#dc3545 !important; border-color:#dc3545 !important;">
+                    Return to Portal Login
+                </h:outputLink>
+            </div>
+        </section>
+    </main>
+</h:body>
+</html>
