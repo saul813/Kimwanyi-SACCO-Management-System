@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
 public class InterestService {
@@ -46,5 +47,18 @@ public class InterestService {
             // Persist atomically to the database tables
             accountDAO.processLedgerTransaction(account, interestTx);
         }
+    }
+
+    public int accrueMonthlyInterestForAllAccounts() {
+        List<SavingsAccount> accounts = accountDAO.findAllAccounts();
+        int postedCount = 0;
+        for (SavingsAccount account : accounts) {
+            BigDecimal beforeBalance = account.getBalance();
+            accrueMonthlyInterest(account);
+            if (account.getBalance().compareTo(beforeBalance) > 0) {
+                postedCount++;
+            }
+        }
+        return postedCount;
     }
 }
