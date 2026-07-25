@@ -1,19 +1,22 @@
 package com.example.bean;
 
-import com.example.dao.HibernateUtil;
+import com.example.dao.LoanDAO;
 import com.example.model.Loan;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.hibernate.Session;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Named("adminOverdueBean")
 @ViewScoped
 public class AdminOverdueBean implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @Inject private LoanDAO loanDAO;
 
     private List<Loan> arrearsPortfolio;
 
@@ -26,13 +29,8 @@ public class AdminOverdueBean implements Serializable {
      * Queries Hibernate model maps to aggregate open un-repaid credit items.
      */
     public void fetchOutstandingRiskPortfolios() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Pulls active approved loans where the amount repaid is still less than total repayable
-            this.arrearsPortfolio = session.createQuery(
-                            "FROM Loan WHERE status = :status AND amountRepaid < totalRepayable ORDER BY actionedAt ASC",
-                            Loan.class)
-                    .setParameter("status", Loan.LoanStatus.APPROVED)
-                    .list();
+        try {
+            this.arrearsPortfolio = loanDAO.findOverdueLoans(new Date());
         } catch (Exception e) {
             e.printStackTrace();
             this.arrearsPortfolio = Collections.emptyList();
