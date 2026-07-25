@@ -2,7 +2,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="jakarta.faces.html"
                 xmlns:ui="jakarta.faces.facelets"
-                xmlns:p="http://primefaces.org"
                 xmlns:f="jakarta.faces.core"
                 template="/WEB-INF/templates/admin-sidebar-template.xhtml">
 
@@ -15,51 +14,56 @@
         </div>
 
         <h:form id="loanUnderwritingForm">
-            <!-- PrimeFaces dynamic pipeline review grid layout panel components -->
-            <p:dataTable id="loansTable" value="#{adminLoanBean.getPendingLoans()}" var="loan"
-                         paginator="true" rows="10" responsiveLayout="scroll"
-                         emptyMessage="No pending credit files currently await review in the underwriting registry."
-                         styleClass="ui-datatable-striped">
+            <h:panelGroup layout="block" rendered="#{empty adminLoanBean.getPendingLoans()}"
+                          style="background:#ffffff; border:1px solid #e9ecef; border-radius:12px; padding:18px; color:#6c757d;">
+                No pending credit files currently await review in the underwriting registry.
+            </h:panelGroup>
 
-                <p:column headerText="Applicant Profile Name" sortBy="#{loan.member.fullName}">
-                    <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
-                </p:column>
+            <div class="data-table-wrap">
+                <h:dataTable id="loansTable" value="#{adminLoanBean.getPendingLoans()}" var="loan"
+                             rendered="#{not empty adminLoanBean.getPendingLoans()}"
+                             styleClass="native-data-table">
+                    <h:column>
+                        <f:facet name="header">Applicant Profile Name</f:facet>
+                        <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                    </h:column>
 
-                <p:column headerText="National ID (NIN)">
-                    <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">National ID (NIN)</f:facet>
+                        <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
+                    </h:column>
 
-                <p:column headerText="Requested Principal">
-                    <h:outputText value="#{loan.getPrincipalAmount()}">
-                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
-                    </h:outputText>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">Requested Principal</f:facet>
+                        <h:outputText value="#{loan.getPrincipalAmount()}">
+                            <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                        </h:outputText>
+                    </h:column>
 
-                <p:column headerText="Application Date">
-                    <h:outputText value="#{loan.appliedAt}">
-                        <f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/>
-                    </h:outputText>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">Application Date</f:facet>
+                        <h:outputText value="#{loan.appliedAt}">
+                            <f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/>
+                        </h:outputText>
+                    </h:column>
 
-                <p:column headerText="Underwriting Status">
-                    <p:tag severity="warning" value="#{loan.status}"/>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">Underwriting Status</f:facet>
+                        <span class="status-badge">#{loan.status}</span>
+                    </h:column>
 
-                <p:column headerText="Management Authorization" style="text-align: center; width: 220px;">
-                    <!-- Approve and Execute Credit Line Payout Button -->
-                    <p:commandButton value="Approve" icon="pi pi-check-circle"
-                                     action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'APPROVED')}"
-                                     update="loanUnderwritingForm :templateMsg"
-                                     styleClass="ui-button-success ui-button-sm" style="margin-right: 5px;"/>
-
-                    <!-- Reject Credit Request File Profile Entry Button -->
-                    <p:commandButton value="Reject" icon="pi pi-times-circle"
-                                     action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'REJECTED')}"
-                                     update="loanUnderwritingForm :templateMsg"
-                                     styleClass="ui-button-danger ui-button-sm"/>
-                </p:column>
-
-            </p:dataTable>
+                    <h:column>
+                        <f:facet name="header">Management Authorization</f:facet>
+                        <h:commandButton value="Approve"
+                                         action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'APPROVED')}"
+                                         styleClass="native-btn native-btn-success"
+                                         style="margin-right: 5px;"/>
+                        <h:commandButton value="Reject"
+                                         action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'REJECTED')}"
+                                         styleClass="native-btn native-btn-danger"/>
+                    </h:column>
+                </h:dataTable>
+            </div>
         </h:form>
     </ui:define>
 

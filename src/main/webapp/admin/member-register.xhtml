@@ -31,6 +31,14 @@
                 </div>
 
                 <div class="form-group">
+                    <h:outputLabel for="email" value="Email Address"/>
+                    <h:inputText id="email" value="#{authBean.newUser.email}" required="true"
+                                 requiredMessage="Email address is required." styleClass="login-input"
+                                 autocomplete="email"
+                                 style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
+                </div>
+
+                <div class="form-group">
                     <h:outputLabel for="phone" value="Mobile Phone Number"/>
                     <h:inputText id="phone" value="#{authBean.newUser.phoneNumber}" required="true"
                                  requiredMessage="Phone contact is required." styleClass="login-input"

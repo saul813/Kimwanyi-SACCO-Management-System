@@ -7,9 +7,9 @@
     <ui:define name="title">Admin Overview - Kimwanyi SACCO</ui:define>
 
 <ui:define name="content">
-<div style="margin-bottom: 25px;">
-    <h2 style="margin: 0; color: #212529;">Operational Summary</h2>
-    <p style="margin: 5px 0 0 0; color: #6c757d;">Real-time metrics for Kimwanyi SACCO corporate positions.</p>
+<div class="admin-page-header">
+    <h2>Operational Summary</h2>
+    <p>Real-time metrics for Kimwanyi SACCO member activity, savings, and credit operations.</p>
 </div>
 
 <h:panelGroup rendered="#{not adminDashboardBean.databaseAvailable}">
@@ -20,24 +20,24 @@
 
 <!-- Metric Grid Layer -->
 <div class="metric-grid">
-    <div class="metric-box" style="border-left-color: #0d6efd;">
+    <div class="metric-box" style="border-top-color: #006041;">
         <div class="metric-title">Registered Members</div>
         <div class="metric-value">#{adminDashboardBean.totalMembersCount}</div>
     </div>
 
-    <div class="metric-box" style="border-left-color: #ffc107;">
+    <div class="metric-box" style="border-top-color: #d4a017;">
         <div class="metric-title">Pending Loans</div>
         <div class="metric-value">#{adminDashboardBean.pendingLoansCount}</div>
     </div>
 
-    <div class="metric-box" style="border-left-color: #198754;">
+    <div class="metric-box" style="border-top-color: #006041;">
         <div class="metric-title">Total SACCO Savings</div>
         <div class="metric-value">
             UGX <h:outputText value="#{adminDashboardBean.totalSACCOSavings}"/>
         </div>
     </div>
 
-    <div class="metric-box" style="border-left-color: #dc3545;">
+    <div class="metric-box" style="border-top-color: #081f33;">
         <div class="metric-title">Active Risk Portfolio</div>
         <div class="metric-value">
             UGX <h:outputText value="#{adminDashboardBean.activeIssuedCredit}"/>
@@ -46,11 +46,23 @@
 </div>
 
 <!-- Quick Information Panel Notice -->
-<section style="margin-top: 20px; background:#ffffff; border:1px solid #dee2e6; border-radius:8px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-    <h3 style="margin:0 0 10px 0; color:#212529;">System Directives</h3>
-    <p style="line-height: 1.6; margin: 0; color: #495057;">
+<section class="admin-card">
+    <h3>System Directives</h3>
+    <p style="margin: 0;">
         Use the navigation menu sidebar pane to manage daily member profiles, approve open underwriting loan documentation matrices, or log cashier teller transaction vouchers.
     </p>
+</section>
+
+<section class="admin-card">
+    <h3>Month-End Savings Interest</h3>
+    <p>
+        Apply monthly savings interest at 5% per annum divided by 12 months. Run once during month-end processing.
+    </p>
+    <h:form>
+        <h:commandButton value="Apply Monthly Interest"
+                         action="#{adminDashboardBean.applyMonthlySavingsInterest()}"
+                         styleClass="admin-primary-button"/>
+    </h:form>
 </section>
 </ui:define>
 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/admin-sidebar-template.xhtml">
+
+    <ui:define name="title">Loan Repayments - Kimwanyi SACCO</ui:define>
+
+    <ui:define name="content">
+        <div style="margin-bottom: 25px;">
+            <h2 style="margin: 0; color: #212529;">Loan Repayment Desk</h2>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">Post repayments against approved loans and close fully repaid credit files.</p>
+        </div>
+
+        <h:form id="loanRepaymentForm">
+            <h:panelGroup layout="block" rendered="#{empty adminRepaymentBean.outstandingLoans}"
+                          style="background:#ffffff; border:1px solid #e9ecef; border-radius:12px; padding:18px; color:#6c757d;">
+                No approved outstanding loans are awaiting repayment.
+            </h:panelGroup>
+
+            <div class="data-table-wrap">
+                <h:dataTable id="repaymentTable" value="#{adminRepaymentBean.outstandingLoans}" var="loan"
+                             rendered="#{not empty adminRepaymentBean.outstandingLoans}"
+                             styleClass="native-data-table">
+                    <h:column>
+                        <f:facet name="header">Borrower</f:facet>
+                        <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                        <br/>
+                        <small><h:outputText value="#{loan.member.nationalId}"/></small>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Total Repayable</f:facet>
+                        <h:outputText value="#{loan.totalRepayable}">
+                            <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Repaid</f:facet>
+                        <h:outputText value="#{loan.amountRepaid}">
+                            <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Outstanding</f:facet>
+                        <h:outputText value="#{adminRepaymentBean.getOutstandingBalance(loan)}" style="font-weight:700; color:#dc3545;">
+                            <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Due Date</f:facet>
+                        <h:outputText value="#{loan.dueDate}">
+                            <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Repayment Amount</f:facet>
+                        <h:inputText value="#{adminRepaymentBean.repaymentAmount}" styleClass="native-input">
+                            <f:convertNumber maxFractionDigits="2"/>
+                        </h:inputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Receipt Ref</f:facet>
+                        <h:inputText value="#{adminRepaymentBean.receiptReference}" styleClass="native-input"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Action</f:facet>
+                        <h:commandButton value="Post"
+                                         action="#{adminRepaymentBean.postRepayment(loan.id)}"
+                                         styleClass="native-btn native-btn-success"/>
+                    </h:column>
+                </h:dataTable>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

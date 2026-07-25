@@ -2,7 +2,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="jakarta.faces.html"
                 xmlns:ui="jakarta.faces.facelets"
-                xmlns:p="http://primefaces.org"
                 xmlns:f="jakarta.faces.core"
                 template="/WEB-INF/templates/admin-sidebar-template.xhtml">
 
@@ -11,50 +10,65 @@
     <ui:define name="content">
         <div style="margin-bottom: 25px;">
             <h2 style="margin: 0; color: #212529;">Credit Risk &amp; Default Recovery Alerts</h2>
-            <p style="margin: 5px 0 0 0; color: #6c757d;">Real-time review panel showing active loans with outstanding, un-repaid balances.</p>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">Real-time review panel showing approved loans that are past their due date and not fully repaid.</p>
         </div>
 
         <h:form id="overdueRiskForm">
-            <!-- PrimeFaces dynamic evaluation registry grid panel -->
-            <p:dataTable id="overdueTable" value="#{adminOverdueBean.arrearsPortfolio}" var="loan"
-                         paginator="true" rows="10" responsiveLayout="scroll"
-                         emptyMessage="Excellent! No active credit portfolios currently reflect an unpaid arrears status."
-                         styleClass="ui-datatable-striped">
+            <h:panelGroup layout="block" rendered="#{empty adminOverdueBean.arrearsPortfolio}"
+                          style="background:#ffffff; border:1px solid #e9ecef; border-radius:12px; padding:18px; color:#6c757d;">
+                Excellent! No approved loans are currently overdue.
+            </h:panelGroup>
 
-                <p:column headerText="Borrower Profile Name" sortBy="#{loan.member.fullName}">
-                    <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
-                </p:column>
+            <div class="data-table-wrap">
+                <h:dataTable id="overdueTable" value="#{adminOverdueBean.arrearsPortfolio}" var="loan"
+                             rendered="#{not empty adminOverdueBean.arrearsPortfolio}"
+                             styleClass="native-data-table">
+                    <h:column>
+                        <f:facet name="header">Borrower Profile Name</f:facet>
+                        <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                    </h:column>
 
-                <p:column headerText="National ID (NIN)">
-                    <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">National ID (NIN)</f:facet>
+                        <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
+                    </h:column>
 
-                <p:column headerText="Total Repayable (With 10%)">
-                    <h:outputText value="#{loan.totalRepayable}">
-                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
-                    </h:outputText>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">Total Repayable (With 10%)</f:facet>
+                        <h:outputText value="#{loan.totalRepayable}">
+                            <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                        </h:outputText>
+                    </h:column>
 
-                <p:column headerText="Amount Cleared to Date">
-                    <h:outputText value="#{loan.amountRepaid}" style="color:#198754; font-weight:600;">
-                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
-                    </h:outputText>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">Amount Cleared to Date</f:facet>
+                        <h:outputText value="#{loan.amountRepaid}" style="color:#198754; font-weight:600;">
+                            <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                        </h:outputText>
+                    </h:column>
 
-                <p:column headerText="Outstanding Arrears Risk Balance">
-                    <!-- Dynamic client calculation processing inline -->
-                    <h:outputText value="#{loan.totalRepayable - loan.amountRepaid}" style="color:#dc3545; font-weight:700;">
-                        <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
-                    </h:outputText>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">Outstanding Arrears Risk Balance</f:facet>
+                        <h:outputText value="#{loan.totalRepayable - loan.amountRepaid}" style="color:#dc3545; font-weight:700;">
+                            <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
+                        </h:outputText>
+                    </h:column>
 
-                <p:column headerText="Disbursed On">
-                    <h:outputText value="#{loan.actionedAt}">
-                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
-                    </h:outputText>
-                </p:column>
+                    <h:column>
+                        <f:facet name="header">Disbursed On</f:facet>
+                        <h:outputText value="#{loan.actionedAt}">
+                            <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        </h:outputText>
+                    </h:column>
 
-            </p:dataTable>
+                    <h:column>
+                        <f:facet name="header">Due Date</f:facet>
+                        <h:outputText value="#{loan.dueDate}" style="color:#dc3545; font-weight:700;">
+                            <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        </h:outputText>
+                    </h:column>
+                </h:dataTable>
+            </div>
         </h:form>
     </ui:define>
 
