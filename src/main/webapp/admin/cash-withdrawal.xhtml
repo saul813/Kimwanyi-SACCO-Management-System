@@ -5,56 +5,63 @@
                 xmlns:f="jakarta.faces.core"
                 template="/WEB-INF/templates/admin-sidebar-template.xhtml">
 
-    <ui:define name="title">Disburse Withdrawal - Kimwanyi SACCO</ui:define>
+    <ui:define name="title">Post Withdrawal - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">Teller Cash Withdrawal Desk</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">Process customer withdrawals. System blocks entries dropping below the UGX 20,000 floor.</p>
-        </div>
+        <div class="admin-shell">
+            <section class="admin-compact-header">
+                <div>
+                    <h2>Post Withdrawal</h2>
+                    <p>Process member withdrawals while preserving the UGX 20,000 minimum balance.</p>
+                </div>
+            </section>
 
-        <section style="max-width:600px; background:#ffffff; border:1px solid #dee2e6; border-radius:8px; padding:22px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <h3 style="margin:0 0 18px 0; color:#212529;">Execute Account Balance Withdrawal</h3>
-
-            <h:form id="withdrawalForm">
-                <div class="form-group" style="display:flex; gap:10px; align-items:flex-end;">
-                    <div style="flex-grow:1;">
-                        <h:outputLabel for="searchNin" value="Search Member National ID (NIN)"/>
-                        <h:inputText id="searchNin" value="#{transactionBean.searchNationalId}"
-                                     styleClass="login-input"
-                                     style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529; text-transform:uppercase;"/>
+            <section class="admin-card admin-form-card accent">
+                <div class="admin-section-heading">
+                    <div>
+                        <h3>Cash Withdrawal Desk</h3>
+                        <p>Lookup the member by National ID before executing the disbursement.</p>
                     </div>
-                    <h:commandButton value="Lookup" action="#{transactionBean.lookupMemberAccount()}"
-                                     style="height:44px; border:1px solid #6c757d; background:#6c757d; color:#ffffff; border-radius:8px; padding:0 16px; font-weight:700; cursor:pointer;"/>
                 </div>
 
-                <h:panelGroup rendered="#{transactionBean.targetAccount != null}">
-                    <div style="background:#fff8f8; padding:15px; border-radius:6px; margin:20px 0; border:1px solid #f8d7da;">
-                        <p style="margin:0 0 8px 0;"><strong>Member Name:</strong> #{transactionBean.targetAccount.member.fullName}</p>
-                        <p style="margin:0 0 8px 0;"><strong>Ledger Account Number:</strong> <code>#{transactionBean.targetAccount.accountNumber}</code></p>
-                        <p style="margin:0; color:#dc3545;"><strong>Available Balance:</strong> UGX <h:outputText value="#{transactionBean.targetAccount.balance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></p>
+                <h:form id="withdrawalForm">
+                    <div class="form-group admin-search-row">
+                        <div>
+                            <h:outputLabel for="searchNin" value="Search Member National ID (NIN)"/>
+                            <h:inputText id="searchNin" value="#{transactionBean.searchNationalId}" styleClass="login-input"/>
+                        </div>
+                        <h:commandButton value="Lookup"
+                                         action="#{transactionBean.lookupMemberAccount()}"
+                                         styleClass="admin-primary-button admin-lookup-button"/>
                     </div>
 
-                    <div class="form-group">
-                        <h:outputLabel for="withdrawalAmount" value="Withdrawal Request Value (UGX)"/>
-                        <h:inputText id="withdrawalAmount" value="#{transactionBean.inputAmount}" required="true"
-                                     requiredMessage="Withdrawal entry required." styleClass="login-input"
-                                     style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
-                    </div>
+                    <h:panelGroup rendered="#{transactionBean.targetAccount != null}">
+                        <div class="admin-account-panel">
+                            <p><strong>Member Name:</strong> #{transactionBean.targetAccount.member.fullName}</p>
+                            <p><strong>Ledger Account Number:</strong> <code>#{transactionBean.targetAccount.accountNumber}</code></p>
+                            <p class="admin-danger-text"><strong>Available Balance:</strong> UGX <h:outputText value="#{transactionBean.targetAccount.balance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></p>
+                        </div>
 
-                    <div class="form-group">
-                        <h:outputLabel for="withdrawalDesc" value="Transaction Narration Reference"/>
-                        <h:inputText id="withdrawalDesc" value="#{transactionBean.inputDescription}" styleClass="login-input"
-                                     style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
-                    </div>
+                        <div class="form-group">
+                            <h:outputLabel for="withdrawalAmount" value="Withdrawal Request Value (UGX)"/>
+                            <h:inputText id="withdrawalAmount"
+                                         value="#{transactionBean.inputAmount}"
+                                         required="true"
+                                         requiredMessage="Withdrawal entry required."
+                                         styleClass="login-input"/>
+                        </div>
 
-                    <div class="form-actions">
-                        <h:commandButton value="Execute Cash Disbursement" action="#{transactionBean.processWithdrawal()}"
-                                         styleClass="login-native-submit"
-                                         style="display:block; width:100%; min-height:44px; box-sizing:border-box; border:1px solid #dc3545; border-radius:8px; background:#dc3545; color:#ffffff; font-family:inherit; font-size:16px; font-weight:700; cursor:pointer;"/>
-                    </div>
-                </h:panelGroup>
-            </h:form>
-        </section>
+                        <div class="form-group">
+                            <h:outputLabel for="withdrawalDesc" value="Transaction Narration Reference"/>
+                            <h:inputText id="withdrawalDesc" value="#{transactionBean.inputDescription}" styleClass="login-input"/>
+                        </div>
+
+                        <h:commandButton value="Execute Cash Disbursement"
+                                         action="#{transactionBean.processWithdrawal()}"
+                                         styleClass="admin-primary-button admin-secondary-button"/>
+                    </h:panelGroup>
+                </h:form>
+            </section>
+        </div>
     </ui:define>
 </ui:composition>

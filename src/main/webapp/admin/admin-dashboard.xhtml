@@ -6,64 +6,60 @@
 
     <ui:define name="title">Admin Overview - Kimwanyi SACCO</ui:define>
 
-<ui:define name="content">
-<div class="admin-page-header">
-    <h2>Operational Summary</h2>
-    <p>Real-time metrics for Kimwanyi SACCO member activity, savings, and credit operations.</p>
-</div>
+    <ui:define name="content">
+        <div class="admin-shell">
+            <section class="admin-compact-header">
+                <div>
+                    <h2>Operational Summary</h2>
+                    <p>Real-time metrics for member activity, savings, and credit operations.</p>
+                </div>
+            </section>
 
-<h:panelGroup rendered="#{not adminDashboardBean.databaseAvailable}">
-    <div style="background:#fff3cd; color:#664d03; border:1px solid #ffecb5; border-radius:8px; padding:14px 16px; margin-bottom:20px;">
-        <strong>Database Notice:</strong> #{adminDashboardBean.databaseStatusMessage}
-    </div>
-</h:panelGroup>
+            <h:panelGroup rendered="#{not adminDashboardBean.databaseAvailable}">
+                <div class="loan-alert">#{adminDashboardBean.databaseStatusMessage}</div>
+            </h:panelGroup>
 
-<!-- Metric Grid Layer -->
-<div class="metric-grid">
-    <div class="metric-box" style="border-top-color: #006041;">
-        <div class="metric-title">Registered Members</div>
-        <div class="metric-value">#{adminDashboardBean.totalMembersCount}</div>
-    </div>
+            <div class="metric-grid">
+                <div class="metric-box">
+                    <div class="metric-title">Registered Members</div>
+                    <div class="metric-value">#{adminDashboardBean.totalMembersCount}</div>
+                </div>
+                <div class="metric-box accent-metric">
+                    <div class="metric-title">Pending Loans</div>
+                    <div class="metric-value">#{adminDashboardBean.pendingLoansCount}</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-title">Total SACCO Savings</div>
+                    <div class="metric-value">UGX <h:outputText value="#{adminDashboardBean.totalSACCOSavings}"/></div>
+                </div>
+                <div class="metric-box dark-metric">
+                    <div class="metric-title">Active Risk Portfolio</div>
+                    <div class="metric-value">UGX <h:outputText value="#{adminDashboardBean.activeIssuedCredit}"/></div>
+                </div>
+            </div>
 
-    <div class="metric-box" style="border-top-color: #d4a017;">
-        <div class="metric-title">Pending Loans</div>
-        <div class="metric-value">#{adminDashboardBean.pendingLoansCount}</div>
-    </div>
+            <section class="admin-card">
+                <div class="admin-section-heading">
+                    <div>
+                        <h3>System Directives</h3>
+                        <p>Use the grouped navigation to manage members, teller savings transactions, loan applications, repayments, and overdue credit files.</p>
+                    </div>
+                </div>
+            </section>
 
-    <div class="metric-box" style="border-top-color: #006041;">
-        <div class="metric-title">Total SACCO Savings</div>
-        <div class="metric-value">
-            UGX <h:outputText value="#{adminDashboardBean.totalSACCOSavings}"/>
+            <section class="admin-card">
+                <div class="admin-section-heading">
+                    <div>
+                        <h3>Month-End Savings Interest</h3>
+                        <p>Apply monthly savings interest at 5% per annum divided by 12 months. Run once during month-end processing.</p>
+                    </div>
+                </div>
+                <h:form>
+                    <h:commandButton value="Apply Monthly Interest"
+                                     action="#{adminDashboardBean.applyMonthlySavingsInterest()}"
+                                     styleClass="admin-primary-button"/>
+                </h:form>
+            </section>
         </div>
-    </div>
-
-    <div class="metric-box" style="border-top-color: #081f33;">
-        <div class="metric-title">Active Risk Portfolio</div>
-        <div class="metric-value">
-            UGX <h:outputText value="#{adminDashboardBean.activeIssuedCredit}"/>
-        </div>
-    </div>
-</div>
-
-<!-- Quick Information Panel Notice -->
-<section class="admin-card">
-    <h3>System Directives</h3>
-    <p style="margin: 0;">
-        Use the navigation menu sidebar pane to manage daily member profiles, approve open underwriting loan documentation matrices, or log cashier teller transaction vouchers.
-    </p>
-</section>
-
-<section class="admin-card">
-    <h3>Month-End Savings Interest</h3>
-    <p>
-        Apply monthly savings interest at 5% per annum divided by 12 months. Run once during month-end processing.
-    </p>
-    <h:form>
-        <h:commandButton value="Apply Monthly Interest"
-                         action="#{adminDashboardBean.applyMonthlySavingsInterest()}"
-                         styleClass="admin-primary-button"/>
-    </h:form>
-</section>
-</ui:define>
-
+    </ui:define>
 </ui:composition>

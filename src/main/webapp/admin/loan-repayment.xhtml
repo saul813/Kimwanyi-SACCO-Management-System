@@ -8,24 +8,27 @@
     <ui:define name="title">Loan Repayments - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom: 25px;">
-            <h2 style="margin: 0; color: #212529;">Loan Repayment Desk</h2>
-            <p style="margin: 5px 0 0 0; color: #6c757d;">Post repayments against approved loans and close fully repaid credit files.</p>
-        </div>
+        <div class="admin-shell">
+        <section class="admin-compact-header">
+            <div>
+                <h2>Loan Repayments</h2>
+                <p>Post repayments against approved loans and close fully repaid credit files.</p>
+            </div>
+        </section>
 
         <h:form id="loanRepaymentForm">
             <h:panelGroup layout="block" rendered="#{empty adminRepaymentBean.outstandingLoans}"
-                          style="background:#ffffff; border:1px solid #e9ecef; border-radius:12px; padding:18px; color:#6c757d;">
+                          styleClass="admin-empty-state">
                 No approved outstanding loans are awaiting repayment.
             </h:panelGroup>
 
-            <div class="data-table-wrap">
+            <div class="admin-table-wrap">
                 <h:dataTable id="repaymentTable" value="#{adminRepaymentBean.outstandingLoans}" var="loan"
                              rendered="#{not empty adminRepaymentBean.outstandingLoans}"
-                             styleClass="native-data-table">
+                             styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">Borrower</f:facet>
-                        <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                        <strong>#{loan.member.fullName}</strong>
                         <br/>
                         <small><h:outputText value="#{loan.member.nationalId}"/></small>
                     </h:column>
@@ -46,7 +49,7 @@
 
                     <h:column>
                         <f:facet name="header">Outstanding</f:facet>
-                        <h:outputText value="#{adminRepaymentBean.getOutstandingBalance(loan)}" style="font-weight:700; color:#dc3545;">
+                        <h:outputText value="#{adminRepaymentBean.getOutstandingBalance(loan)}" styleClass="admin-danger-text">
                             <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
                         </h:outputText>
                     </h:column>
@@ -60,25 +63,26 @@
 
                     <h:column>
                         <f:facet name="header">Repayment Amount</f:facet>
-                        <h:inputText value="#{adminRepaymentBean.repaymentAmount}" styleClass="native-input">
+                        <h:inputText value="#{adminRepaymentBean.repaymentAmount}" styleClass="login-input">
                             <f:convertNumber maxFractionDigits="2"/>
                         </h:inputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Receipt Ref</f:facet>
-                        <h:inputText value="#{adminRepaymentBean.receiptReference}" styleClass="native-input"/>
+                        <h:inputText value="#{adminRepaymentBean.receiptReference}" styleClass="login-input"/>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Action</f:facet>
                         <h:commandButton value="Post"
                                          action="#{adminRepaymentBean.postRepayment(loan.id)}"
-                                         styleClass="native-btn native-btn-success"/>
+                                         styleClass="admin-primary-button"/>
                     </h:column>
                 </h:dataTable>
             </div>
         </h:form>
+        </div>
     </ui:define>
 
 </ui:composition>

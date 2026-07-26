@@ -8,34 +8,37 @@
     <ui:define name="title">Loan Underwriting - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom: 25px;">
-            <h2 style="margin: 0; color: #212529;">Credit Underwriting Desk</h2>
-            <p style="margin: 5px 0 0 0; color: #6c757d;">Review open borrowing requests. System calculates flat 10% interest automatically upon approval.</p>
-        </div>
+        <div class="admin-shell">
+        <section class="admin-compact-header">
+            <div>
+                <h2>Loan Applications</h2>
+                <p>Review pending borrowing requests. The system calculates flat 10% interest automatically on approval.</p>
+            </div>
+        </section>
 
         <h:form id="loanUnderwritingForm">
-            <h:panelGroup layout="block" rendered="#{empty adminLoanBean.getPendingLoans()}"
-                          style="background:#ffffff; border:1px solid #e9ecef; border-radius:12px; padding:18px; color:#6c757d;">
+            <h:panelGroup layout="block" rendered="#{empty adminLoanBean.pendingLoans}"
+                          styleClass="admin-empty-state">
                 No pending credit files currently await review in the underwriting registry.
             </h:panelGroup>
 
-            <div class="data-table-wrap">
-                <h:dataTable id="loansTable" value="#{adminLoanBean.getPendingLoans()}" var="loan"
-                             rendered="#{not empty adminLoanBean.getPendingLoans()}"
-                             styleClass="native-data-table">
+            <div class="admin-table-wrap">
+                <h:dataTable id="loansTable" value="#{adminLoanBean.pendingLoans}" var="loan"
+                             rendered="#{not empty adminLoanBean.pendingLoans}"
+                             styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">Applicant Profile Name</f:facet>
-                        <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                        <strong>#{loan.member.fullName}</strong>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">National ID (NIN)</f:facet>
-                        <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
+                        <span class="admin-mono">#{loan.member.nationalId}</span>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Requested Principal</f:facet>
-                        <h:outputText value="#{loan.getPrincipalAmount()}">
+                        <h:outputText value="#{loan.principalAmount}">
                             <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
                         </h:outputText>
                     </h:column>
@@ -54,22 +57,22 @@
 
                     <h:column>
                         <f:facet name="header">Underwriting Status</f:facet>
-                        <span class="status-badge">#{loan.status}</span>
+                        <span class="admin-status-pill">#{loan.status}</span>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Management Authorization</f:facet>
                         <h:commandButton value="Approve"
                                          action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'APPROVED')}"
-                                         styleClass="native-btn native-btn-success"
-                                         style="margin-right: 5px;"/>
+                                         styleClass="admin-primary-button"/>
                         <h:commandButton value="Reject"
                                          action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'REJECTED')}"
-                                         styleClass="native-btn native-btn-danger"/>
+                                         styleClass="admin-primary-button admin-danger-button"/>
                     </h:column>
                 </h:dataTable>
             </div>
         </h:form>
+        </div>
     </ui:define>
 
 </ui:composition>

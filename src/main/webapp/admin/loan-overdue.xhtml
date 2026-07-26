@@ -8,29 +8,32 @@
     <ui:define name="title">Credit Risk Analysis - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom: 25px;">
-            <h2 style="margin: 0; color: #212529;">Credit Risk &amp; Default Recovery Alerts</h2>
-            <p style="margin: 5px 0 0 0; color: #6c757d;">Real-time review panel showing approved loans that are past their due date and not fully repaid.</p>
-        </div>
+        <div class="admin-shell">
+        <section class="admin-compact-header">
+            <div>
+                <h2>Overdue Loans</h2>
+                <p>Review approved loans that are past due and not fully repaid.</p>
+            </div>
+        </section>
 
         <h:form id="overdueRiskForm">
             <h:panelGroup layout="block" rendered="#{empty adminOverdueBean.arrearsPortfolio}"
-                          style="background:#ffffff; border:1px solid #e9ecef; border-radius:12px; padding:18px; color:#6c757d;">
+                          styleClass="admin-empty-state">
                 Excellent! No approved loans are currently overdue.
             </h:panelGroup>
 
-            <div class="data-table-wrap">
+            <div class="admin-table-wrap">
                 <h:dataTable id="overdueTable" value="#{adminOverdueBean.arrearsPortfolio}" var="loan"
                              rendered="#{not empty adminOverdueBean.arrearsPortfolio}"
-                             styleClass="native-data-table">
+                             styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">Borrower Profile Name</f:facet>
-                        <h:outputText value="#{loan.member.fullName}" style="font-weight: 600;"/>
+                        <strong>#{loan.member.fullName}</strong>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">National ID (NIN)</f:facet>
-                        <h:outputText value="#{loan.member.nationalId}" style="font-family: monospace;"/>
+                        <span class="admin-mono">#{loan.member.nationalId}</span>
                     </h:column>
 
                     <h:column>
@@ -42,14 +45,14 @@
 
                     <h:column>
                         <f:facet name="header">Amount Cleared to Date</f:facet>
-                        <h:outputText value="#{loan.amountRepaid}" style="color:#198754; font-weight:600;">
+                        <h:outputText value="#{loan.amountRepaid}" styleClass="admin-success-text">
                             <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
                         </h:outputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Outstanding Arrears Risk Balance</f:facet>
-                        <h:outputText value="#{loan.totalRepayable - loan.amountRepaid}" style="color:#dc3545; font-weight:700;">
+                        <h:outputText value="#{adminOverdueBean.getOutstandingBalance(loan)}" styleClass="admin-danger-text">
                             <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
                         </h:outputText>
                     </h:column>
@@ -63,13 +66,14 @@
 
                     <h:column>
                         <f:facet name="header">Due Date</f:facet>
-                        <h:outputText value="#{loan.dueDate}" style="color:#dc3545; font-weight:700;">
+                        <h:outputText value="#{loan.dueDate}" styleClass="admin-danger-text">
                             <f:convertDateTime pattern="dd-MMM-yyyy"/>
                         </h:outputText>
                     </h:column>
                 </h:dataTable>
             </div>
         </h:form>
+        </div>
     </ui:define>
 
 </ui:composition>

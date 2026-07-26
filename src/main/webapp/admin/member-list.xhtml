@@ -4,80 +4,80 @@
                 xmlns:ui="jakarta.faces.facelets"
                 template="/WEB-INF/templates/admin-sidebar-template.xhtml">
 
-    <ui:define name="title">Member Management - Kimwanyi SACCO</ui:define>
+    <ui:define name="title">Member Registry - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h2 style="margin: 0; color: #212529;">Member Registry</h2>
-                <p style="margin: 5px 0 0 0; color: #6c757d;">Verify applications, inspect unique National IDs, or toggle operational status states.</p>
-            </div>
-        </div>
-
-        <h:panelGroup rendered="#{not adminMemberBean.registryAvailable}">
-            <div style="background:#f8d7da; color:#842029; border:1px solid #f5c2c7; border-radius:8px; padding:14px 16px; margin-bottom:20px;">
-                <strong>Registry Notice:</strong> #{adminMemberBean.registryStatusMessage}
-            </div>
-        </h:panelGroup>
-
-        <h:form id="memberRegistryForm">
-            <section style="background:#ffffff; border:1px solid #dee2e6; border-radius:8px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <h3 style="margin:0; color:#212529;">Registered SACCO Members</h3>
-                    <span style="background:#e7f1ff; color:#084298; border-radius:999px; padding:6px 12px; font-weight:700;">
-                        Total: #{adminMemberBean.memberCount}
-                    </span>
+        <div class="admin-shell">
+            <section class="admin-compact-header">
+                <div>
+                    <h2>Member Registry</h2>
+                    <p>Verify applications, inspect National IDs, and manage member account status.</p>
                 </div>
-
-                <h:panelGroup rendered="#{empty adminMemberBean.allMembers}">
-                    <div style="background:#f8f9fa; border:1px dashed #adb5bd; border-radius:8px; padding:18px; color:#6c757d;">
-                        No member records found. Confirm the registered user has role MEMBER in the users table.
-                    </div>
-                </h:panelGroup>
-
-                <h:panelGroup rendered="#{not empty adminMemberBean.allMembers}">
-                    <table style="width:100%; border-collapse:collapse;">
-                        <thead>
-                            <tr style="background:#f8f9fa; color:#495057;">
-                                <th style="text-align:left; padding:12px; border-bottom:1px solid #dee2e6;">Full Legal Name</th>
-                                <th style="text-align:left; padding:12px; border-bottom:1px solid #dee2e6;">National ID (NIN)</th>
-                                <th style="text-align:left; padding:12px; border-bottom:1px solid #dee2e6;">Email Address</th>
-                                <th style="text-align:left; padding:12px; border-bottom:1px solid #dee2e6;">Phone Number</th>
-                                <th style="text-align:left; padding:12px; border-bottom:1px solid #dee2e6;">Role</th>
-                                <th style="text-align:left; padding:12px; border-bottom:1px solid #dee2e6;">Status</th>
-                                <th style="text-align:center; padding:12px; border-bottom:1px solid #dee2e6;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ui:repeat value="#{adminMemberBean.allMembers}" var="user">
-                                <tr>
-                                    <td style="padding:12px; border-bottom:1px solid #f1f3f5; font-weight:600;">#{user.fullName}</td>
-                                    <td style="padding:12px; border-bottom:1px solid #f1f3f5; font-family:monospace;">#{user.nationalId}</td>
-                                    <td style="padding:12px; border-bottom:1px solid #f1f3f5;">#{user.email}</td>
-                                    <td style="padding:12px; border-bottom:1px solid #f1f3f5;">#{user.phoneNumber}</td>
-                                    <td style="padding:12px; border-bottom:1px solid #f1f3f5;">#{user.role}</td>
-                                    <td style="padding:12px; border-bottom:1px solid #f1f3f5;">
-                                        <span style="border-radius:999px; padding:5px 10px; font-weight:700; background:#{user.status == 'ACTIVE' ? '#d1e7dd' : (user.status == 'PENDING' ? '#fff3cd' : '#f8d7da')}; color:#{user.status == 'ACTIVE' ? '#0f5132' : (user.status == 'PENDING' ? '#664d03' : '#842029')};">
-                                            #{user.status}
-                                        </span>
-                                    </td>
-                                    <td style="padding:12px; border-bottom:1px solid #f1f3f5; text-align:center;">
-                                        <h:commandButton value="Activate"
-                                                         action="#{adminMemberBean.updateStatus(user.id, 'ACTIVE')}"
-                                                         rendered="#{user.status != 'ACTIVE'}"
-                                                         style="border:0; background:#198754; color:#ffffff; border-radius:6px; padding:8px 10px; font-weight:700; cursor:pointer; margin-right:6px;"/>
-                                        <h:commandButton value="Deactivate"
-                                                         action="#{adminMemberBean.updateStatus(user.id, 'DEACTIVATED')}"
-                                                         rendered="#{user.status == 'ACTIVE'}"
-                                                         style="border:0; background:#dc3545; color:#ffffff; border-radius:6px; padding:8px 10px; font-weight:700; cursor:pointer;"/>
-                                    </td>
-                                </tr>
-                            </ui:repeat>
-                        </tbody>
-                    </table>
-                </h:panelGroup>
             </section>
-        </h:form>
-    </ui:define>
 
+            <h:panelGroup rendered="#{not adminMemberBean.registryAvailable}">
+                <div class="loan-alert">#{adminMemberBean.registryStatusMessage}</div>
+            </h:panelGroup>
+
+            <h:form id="memberRegistryForm">
+                <section class="admin-card">
+                    <div class="admin-section-heading">
+                        <div>
+                            <h3>Registered SACCO Members</h3>
+                            <p>All user records with the member role.</p>
+                        </div>
+                        <span class="admin-count-pill">Total: #{adminMemberBean.memberCount}</span>
+                    </div>
+
+                    <h:panelGroup rendered="#{empty adminMemberBean.allMembers}">
+                        <div class="admin-empty-state">No member records found. Confirm registered users have role MEMBER.</div>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{not empty adminMemberBean.allMembers}">
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                <tr>
+                                    <th>Full Legal Name</th>
+                                    <th>National ID</th>
+                                    <th>Email Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <ui:repeat value="#{adminMemberBean.allMembers}" var="user">
+                                    <tr>
+                                        <td><strong>#{user.fullName}</strong></td>
+                                        <td class="admin-mono">#{user.nationalId}</td>
+                                        <td>#{user.email}</td>
+                                        <td>#{user.phoneNumber}</td>
+                                        <td>#{user.role}</td>
+                                        <td>
+                                            <span class="admin-status-pill #{user.status == 'ACTIVE' ? 'admin-status-active' : (user.status == 'DEACTIVATED' ? 'admin-status-deactivated' : '')}">
+                                                #{user.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <h:commandButton value="Activate"
+                                                             action="#{adminMemberBean.updateStatus(user.id, 'ACTIVE')}"
+                                                             rendered="#{user.status != 'ACTIVE'}"
+                                                             styleClass="admin-primary-button"/>
+                                            <h:commandButton value="Deactivate"
+                                                             action="#{adminMemberBean.updateStatus(user.id, 'DEACTIVATED')}"
+                                                             rendered="#{user.status == 'ACTIVE'}"
+                                                             styleClass="admin-primary-button admin-danger-button"/>
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                    </h:panelGroup>
+                </section>
+            </h:form>
+        </div>
+    </ui:define>
 </ui:composition>

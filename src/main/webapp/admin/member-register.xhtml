@@ -4,61 +4,57 @@
                 xmlns:ui="jakarta.faces.facelets"
                 template="/WEB-INF/templates/admin-sidebar-template.xhtml">
 
-    <ui:define name="title">Onboard Member - Kimwanyi SACCO</ui:define>
+    <ui:define name="title">Register Member - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">Walk-In Registration Desk</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">Manually onboard new members and verify unique National ID metrics.</p>
-        </div>
+        <div class="admin-shell">
+            <section class="admin-compact-header">
+                <div>
+                    <h2>Register Member</h2>
+                    <p>Manually onboard a new SACCO member and submit the profile for activation.</p>
+                </div>
+            </section>
 
-        <section style="max-width:600px; background:#ffffff; border:1px solid #dee2e6; border-radius:8px; padding:22px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <h3 style="margin:0 0 18px 0; color:#212529;">New Member Enrollment Form</h3>
-
-            <h:form id="adminRegForm">
-                <div class="form-group">
-                    <h:outputLabel for="fullName" value="Full Legal Name"/>
-                    <h:inputText id="fullName" value="#{authBean.newUser.fullName}" required="true"
-                                 requiredMessage="Full legal name is required." styleClass="login-input"
-                                 style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
+            <section class="admin-card admin-form-card">
+                <div class="admin-section-heading">
+                    <div>
+                        <h3>New Member Enrollment</h3>
+                        <p>Capture verified identity and contact details.</p>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <h:outputLabel for="nationalId" value="National ID (NIN)"/>
-                    <h:inputText id="nationalId" value="#{authBean.newUser.nationalId}" required="true"
-                                 requiredMessage="National ID code is mandatory." styleClass="login-input"
-                                 style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529; text-transform:uppercase;"/>
-                </div>
-
-                <div class="form-group">
-                    <h:outputLabel for="email" value="Email Address"/>
-                    <h:inputText id="email" value="#{authBean.newUser.email}" required="true"
-                                 requiredMessage="Email address is required." styleClass="login-input"
-                                 autocomplete="email"
-                                 style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
-                </div>
-
-                <div class="form-group">
-                    <h:outputLabel for="phone" value="Mobile Phone Number"/>
-                    <h:inputText id="phone" value="#{authBean.newUser.phoneNumber}" required="true"
-                                 requiredMessage="Phone contact is required." styleClass="login-input"
-                                 style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
-                </div>
-
-                <div class="form-group">
-                    <h:outputLabel for="password" value="Assign Initial Gateway Password"/>
-                    <h:inputText id="password" value="#{authBean.newUser.password}" required="true"
-                                 requiredMessage="Temporary access password is required." styleClass="login-input"
-                                 style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
-                </div>
-
-                <div class="form-actions">
+                <h:form id="adminRegForm">
+                    <div class="form-group">
+                        <h:outputLabel for="fullName" value="Full Legal Name"/>
+                        <h:inputText id="fullName" value="#{authBean.newUser.fullName}" required="true"
+                                     requiredMessage="Full legal name is required." styleClass="login-input"/>
+                    </div>
+                    <div class="form-group">
+                        <h:outputLabel for="nationalId" value="National ID (NIN)"/>
+                        <h:inputText id="nationalId" value="#{authBean.newUser.nationalId}" required="true"
+                                     requiredMessage="National ID code is mandatory." styleClass="login-input"/>
+                    </div>
+                    <div class="form-group">
+                        <h:outputLabel for="email" value="Email Address"/>
+                        <h:inputText id="email" value="#{authBean.newUser.email}" required="true"
+                                     requiredMessage="Email address is required." styleClass="login-input"
+                                     autocomplete="email"/>
+                    </div>
+                    <div class="form-group">
+                        <h:outputLabel for="phone" value="Mobile Phone Number"/>
+                        <h:inputText id="phone" value="#{authBean.newUser.phoneNumber}" required="true"
+                                     requiredMessage="Phone contact is required." styleClass="login-input"/>
+                    </div>
+                    <div class="form-group">
+                        <h:outputLabel for="password" value="Assign Initial Gateway Password"/>
+                        <h:inputText id="password" value="#{authBean.newUser.password}" required="true"
+                                     requiredMessage="Temporary access password is required." styleClass="login-input"/>
+                    </div>
                     <h:commandButton value="Onboard and Provision Profile"
                                      action="#{authBean.register()}"
-                                     styleClass="login-native-submit"
-                                     style="display:block; width:100%; min-height:44px; box-sizing:border-box; border:1px solid #0d6efd; border-radius:8px; background:#0d6efd; color:#ffffff; font-family:inherit; font-size:16px; font-weight:700; cursor:pointer;"/>
-                </div>
-            </h:form>
-        </section>
+                                     styleClass="admin-primary-button"/>
+                </h:form>
+            </section>
+        </div>
     </ui:define>
 </ui:composition>
