@@ -7,50 +7,52 @@
     <ui:define name="title">My Profile - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">My Profile</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">View account details and update your portal password.</p>
+        <div class="member-page-header">
+            <h2>My Profile</h2>
+            <p>Update editable contact and security details. Verified membership identity is admin-controlled.</p>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:30px;">
+        <div class="member-dashboard-grid">
             <section class="member-card">
-                <h3>Profile Details</h3>
-                <div class="info-row"><span class="info-label">Full Account Name</span><span class="info-value">#{authBean.loggedInUser.fullName}</span></div>
-                <div class="info-row"><span class="info-label">National ID (NIN)</span><span class="info-value">#{authBean.loggedInUser.nationalId}</span></div>
-                <div class="info-row"><span class="info-label">Email Address</span><span class="info-value">#{authBean.loggedInUser.email}</span></div>
-                <div class="info-row"><span class="info-label">Registered Mobile Number</span><span class="info-value">#{authBean.loggedInUser.phoneNumber}</span></div>
-                <div class="info-row"><span class="info-label">Portal Role</span><span class="status-pill">#{authBean.loggedInUser.role}</span></div>
-                <div class="info-row" style="border-bottom:none;"><span class="info-label">Account Status</span><span class="status-pill">#{authBean.loggedInUser.status}</span></div>
-            </section>
+                <h3>Editable Profile Details</h3>
+                <h:form id="contactForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <h:outputLabel for="profilePhoto" value="Profile Picture"/>
+                        <input id="profilePhoto" type="file" class="login-input" accept="image/*"/>
+                        <small class="form-help">Upload control is ready; permanent photo storage needs a profile image field or file-storage location.</small>
+                    </div>
+                    <div class="form-group">
+                        <h:outputLabel for="phone" value="Phone Number"/>
+                        <h:inputText id="phone" value="#{memberPortalBean.profilePhoneNumber}" required="true" styleClass="login-input"/>
+                    </div>
+                    <div class="form-group">
+                        <h:outputLabel for="email" value="Email Address"/>
+                        <h:inputText id="email" value="#{memberPortalBean.profileEmailAddress}" required="true" styleClass="login-input"/>
+                    </div>
+                    <h:commandButton value="Save Contact Details" action="#{memberPortalBean.updateProfileContactDetails()}" styleClass="login-native-submit"/>
+                </h:form>
 
-            <section class="member-card">
-                <h3>Modify Portal Password</h3>
-                <h:form id="passwordModificationForm">
+                <h:form id="passwordModificationForm" style="margin-top:24px;">
+                    <h3>Password Change</h3>
                     <div class="form-group">
                         <h:outputLabel for="currentPassword" value="Current Password"/>
-                        <h:inputSecret id="currentPassword" value="#{memberPortalBean.currentPasswordInput}"
-                                       required="true"
-                                       requiredMessage="Current password is required."
-                                       styleClass="login-input"
-                                       style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
+                        <h:inputSecret id="currentPassword" value="#{memberPortalBean.currentPasswordInput}" required="true" styleClass="login-input"/>
                     </div>
-
                     <div class="form-group">
                         <h:outputLabel for="newPassword" value="New Password"/>
-                        <h:inputSecret id="newPassword" value="#{memberPortalBean.newPasswordInput}"
-                                       required="true"
-                                       requiredMessage="New password is required."
-                                       styleClass="login-input"
-                                       style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
+                        <h:inputSecret id="newPassword" value="#{memberPortalBean.newPasswordInput}" required="true" styleClass="login-input"/>
                     </div>
-
-                    <div class="form-actions">
-                        <h:commandButton value="Commit Credentials Change"
-                                         action="#{memberPortalBean.updateProfilePassword()}"
-                                         styleClass="login-native-submit"
-                                         style="display:block; width:100%; min-height:44px; box-sizing:border-box; border:1px solid #ffc107; border-radius:8px; background:#ffc107; color:#212529; font-family:inherit; font-size:16px; font-weight:700; cursor:pointer;"/>
-                    </div>
+                    <h:commandButton value="Change Password" action="#{memberPortalBean.updateProfilePassword()}" styleClass="login-native-submit"/>
                 </h:form>
+            </section>
+
+            <section class="member-card readonly-card">
+                <h3>Verified Membership Details</h3>
+                <p class="member-muted">Contact Admin to change these records.</p>
+                <div class="info-row"><span class="info-label">Full Legal Name</span><span class="info-value">#{authBean.loggedInUser.fullName}</span></div>
+                <div class="info-row"><span class="info-label">National ID (NIN)</span><span class="info-value">#{authBean.loggedInUser.nationalId}</span></div>
+                <div class="info-row"><span class="info-label">Portal Role</span><span class="status-pill">#{authBean.loggedInUser.role}</span></div>
+                <div class="info-row" style="border-bottom:none;"><span class="info-label">Account Status</span><span class="status-pill">#{authBean.loggedInUser.status}</span></div>
             </section>
         </div>
     </ui:define>
