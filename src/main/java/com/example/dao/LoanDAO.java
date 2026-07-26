@@ -52,31 +52,31 @@ public class LoanDAO {
     // Pulls all pending loan applications for the Administrative Review grid panel
     public List<Loan> findPendingLoans() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Loan WHERE status = :status ORDER BY appliedAt ASC", Loan.class)
+            return session.createQuery("SELECT l FROM Loan l JOIN FETCH l.member WHERE l.status = :status ORDER BY l.appliedAt ASC", Loan.class)
                     .setParameter("status", Loan.LoanStatus.PENDING)
                     .list();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return List.of();
         }
     }
 
     // Pulls historical loan records associated with a specific member account
     public List<Loan> findLoansByUserId(Long userId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Loan> query = session.createQuery("FROM Loan WHERE member.id = :uid ORDER BY appliedAt DESC", Loan.class);
+            Query<Loan> query = session.createQuery("SELECT l FROM Loan l JOIN FETCH l.member WHERE l.member.id = :uid ORDER BY l.appliedAt DESC", Loan.class);
             query.setParameter("uid", userId);
             return query.list();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return List.of();
         }
     }
 
     public List<Loan> findApprovedOutstandingLoans() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
-                            "FROM Loan WHERE status = :status AND amountRepaid < totalRepayable ORDER BY actionedAt ASC",
+                            "SELECT l FROM Loan l JOIN FETCH l.member WHERE l.status = :status AND l.amountRepaid < l.totalRepayable ORDER BY l.actionedAt ASC",
                             Loan.class)
                     .setParameter("status", Loan.LoanStatus.APPROVED)
                     .list();
@@ -89,7 +89,7 @@ public class LoanDAO {
     public List<Loan> findOverdueLoans(Date today) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
-                            "FROM Loan WHERE status = :status AND amountRepaid < totalRepayable AND dueDate < :today ORDER BY dueDate ASC",
+                            "SELECT l FROM Loan l JOIN FETCH l.member WHERE l.status = :status AND l.amountRepaid < l.totalRepayable AND l.dueDate < :today ORDER BY l.dueDate ASC",
                             Loan.class)
                     .setParameter("status", Loan.LoanStatus.APPROVED)
                     .setParameter("today", today)

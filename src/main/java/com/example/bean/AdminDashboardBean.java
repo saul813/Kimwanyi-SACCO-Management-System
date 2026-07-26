@@ -1,6 +1,7 @@
 package com.example.bean;
 
 import com.example.dao.HibernateUtil;
+import com.example.dao.LoanDAO;
 import com.example.model.Loan;
 import com.example.model.User;
 import com.example.service.InterestService;
@@ -20,6 +21,7 @@ public class AdminDashboardBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject private InterestService interestService;
+    @Inject private LoanDAO loanDAO;
 
     private long totalMembersCount;
     private long pendingLoansCount;
@@ -49,11 +51,10 @@ public class AdminDashboardBean implements Serializable {
                     "SELECT COALESCE(SUM(a.balance), 0) FROM SavingsAccount a", BigDecimal.class)
                     .uniqueResult();
 
-            activeIssuedCredit = session.createQuery(
-                    "SELECT COALESCE(SUM(l.totalRepayable - l.amountRepaid), 0) FROM Loan l WHERE l.status = :status",
-                    BigDecimal.class)
-                    .setParameter("status", Loan.LoanStatus.APPROVED)
-                    .uniqueResult();
+            activeIssuedCredit = loanDAO.findApprovedOutstandingLoans()
+                    .stream()
+                    .map(this::calculateOutstandingBalance)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             databaseAvailable = true;
             databaseStatusMessage = "Database connection active.";
@@ -93,4 +94,11 @@ public class AdminDashboardBean implements Serializable {
     public BigDecimal getActiveIssuedCredit() { return activeIssuedCredit; }
     public boolean isDatabaseAvailable() { return databaseAvailable; }
     public String getDatabaseStatusMessage() { return databaseStatusMessage; }
+
+    private BigDecimal calculateOutstandingBalance(Loan loan) {
+        if (loan == null || loan.getTotalRepayable() == null || loan.getAmountRepaid() == null) {
+            return BigDecimal.ZERO;
+        }
+        return loan.getTotalRepayable().subtract(loan.getAmountRepaid());
+    }
 }

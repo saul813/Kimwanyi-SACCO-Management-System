@@ -7,6 +7,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -38,4 +39,11 @@ public class AdminOverdueBean implements Serializable {
     }
 
     public List<Loan> getArrearsPortfolio() { return arrearsPortfolio != null ? arrearsPortfolio : Collections.emptyList(); }
+
+    public BigDecimal getOutstandingBalance(Loan loan) {
+        if (loan == null || loan.getTotalRepayable() == null || loan.getAmountRepaid() == null) {
+            return BigDecimal.ZERO;
+        }
+        return loan.getTotalRepayable().subtract(loan.getAmountRepaid());
+    }
 }
