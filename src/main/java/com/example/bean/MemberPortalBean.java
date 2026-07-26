@@ -530,66 +530,37 @@ public class MemberPortalBean implements Serializable {
     }
     public List<Transaction> getStatementHistory() { return statementHistory; }
     public List<LoanLedgerRow> getLoanLedgerHistory() {
-        class LoanLedgerEvent {
-            private final Date date;
-            private final String type;
-            private final BigDecimal amount;
-            private final BigDecimal balanceImpact;
-            private final int sortOrder;
-
-            private LoanLedgerEvent(Date date, String type, BigDecimal amount, BigDecimal balanceImpact, int sortOrder) {
-                this.date = date;
-                this.type = type;
-                this.amount = amount == null ? BigDecimal.ZERO : amount;
-                this.balanceImpact = balanceImpact == null ? BigDecimal.ZERO : balanceImpact;
-                this.sortOrder = sortOrder;
-            }
-        }
-
-        List<LoanLedgerEvent> events = new java.util.ArrayList<>();
+        List<LoanLedgerRow> rows = new java.util.ArrayList<>();
 
         for (Loan loan : personalLoans) {
-            events.add(new LoanLedgerEvent(
+            BigDecimal runningBalance = loan.getTotalRepayable() == null ? BigDecimal.ZERO : loan.getTotalRepayable();
+            rows.add(new LoanLedgerRow(
                     loan.getAppliedAt(),
                     "Loan Application - " + loan.getStatus(),
                     loan.getPrincipalAmount(),
-                    loan.getTotalRepayable(),
-                    0
-            ));
-        }
-
-        for (Repayment repayment : personalRepayments) {
-            String repaymentReference = cleanActivityReference(repayment.getReceiptReference());
-            events.add(new LoanLedgerEvent(
-                    repayment.getPaidAt(),
-                    "Loan Repayment" + (repaymentReference == null || repaymentReference.isBlank() ? "" : " - " + repaymentReference),
-                    repayment.getAmount(),
-                    repayment.getAmount().negate(),
-                    1
-            ));
-        }
-
-        events = events.stream()
-                .filter(event -> event.date != null)
-                .sorted((left, right) -> {
-                    int dateComparison = left.date.compareTo(right.date);
-                    return dateComparison != 0 ? dateComparison : Integer.compare(left.sortOrder, right.sortOrder);
-                })
-                .collect(Collectors.toList());
-
-        List<LoanLedgerRow> rows = new java.util.ArrayList<>();
-        BigDecimal runningBalance = BigDecimal.ZERO;
-        for (LoanLedgerEvent event : events) {
-            runningBalance = runningBalance.add(event.balanceImpact);
-            if (runningBalance.compareTo(BigDecimal.ZERO) < 0) {
-                runningBalance = BigDecimal.ZERO;
-            }
-            rows.add(new LoanLedgerRow(
-                    event.date,
-                    event.type,
-                    event.amount,
                     runningBalance
             ));
+
+            List<Repayment> loanRepayments = personalRepayments.stream()
+                    .filter(repayment -> repayment.getLoan() != null
+                            && repayment.getLoan().getId() != null
+                            && repayment.getLoan().getId().equals(loan.getId()))
+                    .sorted((left, right) -> left.getPaidAt().compareTo(right.getPaidAt()))
+                    .collect(Collectors.toList());
+
+            for (Repayment repayment : loanRepayments) {
+                runningBalance = runningBalance.subtract(repayment.getAmount() == null ? BigDecimal.ZERO : repayment.getAmount());
+                if (runningBalance.compareTo(BigDecimal.ZERO) < 0) {
+                    runningBalance = BigDecimal.ZERO;
+                }
+                String repaymentReference = cleanActivityReference(repayment.getReceiptReference());
+                rows.add(new LoanLedgerRow(
+                        repayment.getPaidAt(),
+                        "Loan Repayment" + (repaymentReference == null || repaymentReference.isBlank() ? "" : " - " + repaymentReference),
+                        repayment.getAmount(),
+                        runningBalance
+                ));
+            }
         }
 
         return rows.stream()
