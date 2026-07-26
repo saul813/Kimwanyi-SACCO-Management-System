@@ -41,6 +41,11 @@
                     </h:column>
 
                     <h:column>
+                        <f:facet name="header">Application Reason</f:facet>
+                        <h:outputText value="#{empty loan.loanReason ? 'Not provided' : loan.loanReason}"/>
+                    </h:column>
+
+                    <h:column>
                         <f:facet name="header">Application Date</f:facet>
                         <h:outputText value="#{loan.appliedAt}">
                             <f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/>
