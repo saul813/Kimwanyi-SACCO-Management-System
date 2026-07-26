@@ -123,6 +123,9 @@
         .admin-card p { line-height:1.45; color:#475569; font-size:13px; }
         .admin-action-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
         .admin-form-card { border-top:3px solid #081f33; max-width:680px; }
+        .admin-wide-form-card { max-width:none; }
+        .admin-two-column-form { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; align-items:start; }
+        .admin-two-column-form .form-group { margin-bottom:0; }
         .admin-form-card.accent { border-top-color:#d4a017; }
         .admin-section-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:12px; }
         .admin-section-heading h3 { margin:0 0 4px; }
@@ -175,6 +178,12 @@
         .admin-status-active { background:#d1e7dd; color:#0f5132; }
         .admin-status-deactivated { background:#f8d7da; color:#842029; }
         .admin-danger-button { border-color:#dc3545; background:#dc3545; }
+        .admin-table-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .admin-table-actions .admin-primary-button { padding:7px 10px; font-size:13px; }
+        .admin-actions-col { width:170px; }
+        .admin-compact-input { min-width:120px; }
+        .admin-savings-layout { display:grid; grid-template-columns:minmax(260px, 0.85fr) minmax(320px, 1.15fr); gap:14px; align-items:start; }
+        .admin-savings-layout .admin-account-panel { margin:0; }
         .admin-primary-button {
             border:1px solid #081f33;
             background:#081f33;
@@ -206,7 +215,7 @@
             .sidebar-group { min-width:150px; }
             .top-navbar { padding: 16px 20px; align-items:flex-start; gap:12px; flex-direction:column; }
             .content-body { padding: 22px; }
-            .admin-action-grid { grid-template-columns:1fr; }
+            .admin-action-grid, .admin-two-column-form, .admin-savings-layout { grid-template-columns:1fr; }
             .admin-search-row { flex-direction:column; align-items:stretch; }
         }
     </style>

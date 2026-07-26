@@ -15,7 +15,7 @@
                 </div>
             </section>
 
-            <section class="admin-card admin-form-card">
+            <section class="admin-card admin-form-card admin-wide-form-card">
                 <div class="admin-section-heading">
                     <div>
                         <h3>New Member Enrollment</h3>
@@ -24,31 +24,33 @@
                 </div>
 
                 <h:form id="adminRegForm">
-                    <div class="form-group">
-                        <h:outputLabel for="fullName" value="Full Legal Name"/>
-                        <h:inputText id="fullName" value="#{authBean.newUser.fullName}" required="true"
-                                     requiredMessage="Full legal name is required." styleClass="login-input"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputLabel for="nationalId" value="National ID (NIN)"/>
-                        <h:inputText id="nationalId" value="#{authBean.newUser.nationalId}" required="true"
-                                     requiredMessage="National ID code is mandatory." styleClass="login-input"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputLabel for="email" value="Email Address"/>
-                        <h:inputText id="email" value="#{authBean.newUser.email}" required="true"
-                                     requiredMessage="Email address is required." styleClass="login-input"
-                                     autocomplete="email"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputLabel for="phone" value="Mobile Phone Number"/>
-                        <h:inputText id="phone" value="#{authBean.newUser.phoneNumber}" required="true"
-                                     requiredMessage="Phone contact is required." styleClass="login-input"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputLabel for="password" value="Assign Initial Gateway Password"/>
-                        <h:inputText id="password" value="#{authBean.newUser.password}" required="true"
-                                     requiredMessage="Temporary access password is required." styleClass="login-input"/>
+                    <div class="admin-two-column-form">
+                        <div class="form-group">
+                            <h:outputLabel for="fullName" value="Full Legal Name"/>
+                            <h:inputText id="fullName" value="#{authBean.newUser.fullName}" required="true"
+                                         requiredMessage="Full legal name is required." styleClass="login-input"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="nationalId" value="National ID (NIN)"/>
+                            <h:inputText id="nationalId" value="#{authBean.newUser.nationalId}" required="true"
+                                         requiredMessage="National ID code is mandatory." styleClass="login-input"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="email" value="Email Address"/>
+                            <h:inputText id="email" value="#{authBean.newUser.email}" required="true"
+                                         requiredMessage="Email address is required." styleClass="login-input"
+                                         autocomplete="email"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="phone" value="Mobile Phone Number"/>
+                            <h:inputText id="phone" value="#{authBean.newUser.phoneNumber}" required="true"
+                                         requiredMessage="Phone contact is required." styleClass="login-input"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="password" value="Assign Initial Gateway Password"/>
+                            <h:inputText id="password" value="#{authBean.newUser.password}" required="true"
+                                         requiredMessage="Temporary access password is required." styleClass="login-input"/>
+                        </div>
                     </div>
                     <h:commandButton value="Onboard and Provision Profile"
                                      action="#{authBean.register()}"

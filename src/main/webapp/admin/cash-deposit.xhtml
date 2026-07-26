@@ -16,7 +16,7 @@
                 </div>
             </section>
 
-            <section class="admin-card admin-form-card">
+            <section class="admin-card admin-form-card admin-wide-form-card">
                 <div class="admin-section-heading">
                     <div>
                         <h3>Cash Deposit Desk</h3>
@@ -36,29 +36,33 @@
                     </div>
 
                     <h:panelGroup rendered="#{transactionBean.targetAccount != null}">
-                        <div class="admin-account-panel">
-                            <p><strong>Member Name:</strong> #{transactionBean.targetAccount.member.fullName}</p>
-                            <p><strong>Ledger Account Number:</strong> <code>#{transactionBean.targetAccount.accountNumber}</code></p>
-                            <p class="admin-success-text"><strong>Current Balance:</strong> UGX <h:outputText value="#{transactionBean.targetAccount.balance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></p>
-                        </div>
+                        <div class="admin-savings-layout">
+                            <div class="admin-account-panel">
+                                <p><strong>Member Name:</strong> #{transactionBean.targetAccount.member.fullName}</p>
+                                <p><strong>Ledger Account Number:</strong> <code>#{transactionBean.targetAccount.accountNumber}</code></p>
+                                <p class="admin-success-text"><strong>Current Balance:</strong> UGX <h:outputText value="#{transactionBean.targetAccount.balance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></p>
+                            </div>
 
-                        <div class="form-group">
-                            <h:outputLabel for="depositAmount" value="Deposit Value (UGX)"/>
-                            <h:inputText id="depositAmount"
-                                         value="#{transactionBean.inputAmount}"
-                                         required="true"
-                                         requiredMessage="Deposit entry required."
-                                         styleClass="login-input"/>
-                        </div>
+                            <div>
+                                <div class="form-group">
+                                    <h:outputLabel for="depositAmount" value="Deposit Value (UGX)"/>
+                                    <h:inputText id="depositAmount"
+                                                 value="#{transactionBean.inputAmount}"
+                                                 required="true"
+                                                 requiredMessage="Deposit entry required."
+                                                 styleClass="login-input"/>
+                                </div>
 
-                        <div class="form-group">
-                            <h:outputLabel for="depositDesc" value="Transaction Narration Reference"/>
-                            <h:inputText id="depositDesc" value="#{transactionBean.inputDescription}" styleClass="login-input"/>
-                        </div>
+                                <div class="form-group">
+                                    <h:outputLabel for="depositDesc" value="Transaction Narration Reference"/>
+                                    <h:inputText id="depositDesc" value="#{transactionBean.inputDescription}" styleClass="login-input"/>
+                                </div>
 
-                        <h:commandButton value="Post Balance Deposit"
-                                         action="#{transactionBean.processDeposit()}"
-                                         styleClass="admin-primary-button"/>
+                                <h:commandButton value="Post Balance Deposit"
+                                                 action="#{transactionBean.processDeposit()}"
+                                                 styleClass="admin-primary-button"/>
+                            </div>
+                        </div>
                     </h:panelGroup>
                 </h:form>
             </section>

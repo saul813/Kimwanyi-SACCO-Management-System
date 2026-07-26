@@ -16,16 +16,24 @@
             </div>
         </section>
 
-        <h:form id="overdueRiskForm">
-            <h:panelGroup layout="block" rendered="#{empty adminOverdueBean.arrearsPortfolio}"
-                          styleClass="admin-empty-state">
-                Excellent! No approved loans are currently overdue.
-            </h:panelGroup>
+        <section class="admin-card">
+            <div class="admin-section-heading">
+                <div>
+                    <h3>Overdue Credit Portfolio</h3>
+                    <p>Prioritize follow-up for loans beyond due date.</p>
+                </div>
+            </div>
 
-            <div class="admin-table-wrap">
-                <h:dataTable id="overdueTable" value="#{adminOverdueBean.arrearsPortfolio}" var="loan"
-                             rendered="#{not empty adminOverdueBean.arrearsPortfolio}"
-                             styleClass="admin-table">
+            <h:form id="overdueRiskForm">
+                <h:panelGroup layout="block" rendered="#{empty adminOverdueBean.arrearsPortfolio}"
+                              styleClass="admin-empty-state">
+                    Excellent! No approved loans are currently overdue.
+                </h:panelGroup>
+
+                <div class="admin-table-wrap">
+                    <h:dataTable id="overdueTable" value="#{adminOverdueBean.arrearsPortfolio}" var="loan"
+                                 rendered="#{not empty adminOverdueBean.arrearsPortfolio}"
+                                 styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">Borrower Profile Name</f:facet>
                         <strong>#{loan.member.fullName}</strong>
@@ -70,9 +78,10 @@
                             <f:convertDateTime pattern="dd-MMM-yyyy"/>
                         </h:outputText>
                     </h:column>
-                </h:dataTable>
-            </div>
-        </h:form>
+                    </h:dataTable>
+                </div>
+            </h:form>
+        </section>
         </div>
     </ui:define>
 

@@ -16,16 +16,24 @@
             </div>
         </section>
 
-        <h:form id="loanRepaymentForm">
-            <h:panelGroup layout="block" rendered="#{empty adminRepaymentBean.outstandingLoans}"
-                          styleClass="admin-empty-state">
-                No approved outstanding loans are awaiting repayment.
-            </h:panelGroup>
+        <section class="admin-card">
+            <div class="admin-section-heading">
+                <div>
+                    <h3>Outstanding Approved Loans</h3>
+                    <p>Enter repayment details against the selected borrower row.</p>
+                </div>
+            </div>
 
-            <div class="admin-table-wrap">
-                <h:dataTable id="repaymentTable" value="#{adminRepaymentBean.outstandingLoans}" var="loan"
-                             rendered="#{not empty adminRepaymentBean.outstandingLoans}"
-                             styleClass="admin-table">
+            <h:form id="loanRepaymentForm">
+                <h:panelGroup layout="block" rendered="#{empty adminRepaymentBean.outstandingLoans}"
+                              styleClass="admin-empty-state">
+                    No approved outstanding loans are awaiting repayment.
+                </h:panelGroup>
+
+                <div class="admin-table-wrap">
+                    <h:dataTable id="repaymentTable" value="#{adminRepaymentBean.outstandingLoans}" var="loan"
+                                 rendered="#{not empty adminRepaymentBean.outstandingLoans}"
+                                 styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">Borrower</f:facet>
                         <strong>#{loan.member.fullName}</strong>
@@ -63,25 +71,28 @@
 
                     <h:column>
                         <f:facet name="header">Repayment Amount</f:facet>
-                        <h:inputText value="#{adminRepaymentBean.repaymentAmount}" styleClass="login-input">
+                        <h:inputText value="#{adminRepaymentBean.repaymentAmount}" styleClass="login-input admin-compact-input">
                             <f:convertNumber maxFractionDigits="2"/>
                         </h:inputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Receipt Ref</f:facet>
-                        <h:inputText value="#{adminRepaymentBean.receiptReference}" styleClass="login-input"/>
+                        <h:inputText value="#{adminRepaymentBean.receiptReference}" styleClass="login-input admin-compact-input"/>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Action</f:facet>
-                        <h:commandButton value="Post"
-                                         action="#{adminRepaymentBean.postRepayment(loan.id)}"
-                                         styleClass="admin-primary-button"/>
+                        <div class="admin-table-actions">
+                            <h:commandButton value="Post"
+                                             action="#{adminRepaymentBean.postRepayment(loan.id)}"
+                                             styleClass="admin-primary-button"/>
+                        </div>
                     </h:column>
-                </h:dataTable>
-            </div>
-        </h:form>
+                    </h:dataTable>
+                </div>
+            </h:form>
+        </section>
         </div>
     </ui:define>
 

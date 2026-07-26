@@ -16,16 +16,24 @@
             </div>
         </section>
 
-        <h:form id="loanUnderwritingForm">
-            <h:panelGroup layout="block" rendered="#{empty adminLoanBean.pendingLoans}"
-                          styleClass="admin-empty-state">
-                No pending credit files currently await review in the underwriting registry.
-            </h:panelGroup>
+        <section class="admin-card">
+            <div class="admin-section-heading">
+                <div>
+                    <h3>Pending Applications</h3>
+                    <p>Approve or reject applications awaiting underwriting.</p>
+                </div>
+            </div>
 
-            <div class="admin-table-wrap">
-                <h:dataTable id="loansTable" value="#{adminLoanBean.pendingLoans}" var="loan"
-                             rendered="#{not empty adminLoanBean.pendingLoans}"
-                             styleClass="admin-table">
+            <h:form id="loanUnderwritingForm">
+                <h:panelGroup layout="block" rendered="#{empty adminLoanBean.pendingLoans}"
+                              styleClass="admin-empty-state">
+                    No pending credit files currently await review in the underwriting registry.
+                </h:panelGroup>
+
+                <div class="admin-table-wrap">
+                    <h:dataTable id="loansTable" value="#{adminLoanBean.pendingLoans}" var="loan"
+                                 rendered="#{not empty adminLoanBean.pendingLoans}"
+                                 styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">Applicant Profile Name</f:facet>
                         <strong>#{loan.member.fullName}</strong>
@@ -62,16 +70,19 @@
 
                     <h:column>
                         <f:facet name="header">Management Authorization</f:facet>
-                        <h:commandButton value="Approve"
-                                         action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'APPROVED')}"
-                                         styleClass="admin-primary-button"/>
-                        <h:commandButton value="Reject"
-                                         action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'REJECTED')}"
-                                         styleClass="admin-primary-button admin-danger-button"/>
+                        <div class="admin-table-actions">
+                            <h:commandButton value="Approve"
+                                             action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'APPROVED')}"
+                                             styleClass="admin-primary-button"/>
+                            <h:commandButton value="Reject"
+                                             action="#{adminLoanBean.processUnderwritingDecision(loan.id, 'REJECTED')}"
+                                             styleClass="admin-primary-button admin-danger-button"/>
+                        </div>
                     </h:column>
-                </h:dataTable>
-            </div>
-        </h:form>
+                    </h:dataTable>
+                </div>
+            </h:form>
+        </section>
         </div>
     </ui:define>
 

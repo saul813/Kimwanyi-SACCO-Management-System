@@ -38,28 +38,30 @@
                 </div>
             </div>
 
-            <section class="admin-card">
-                <div class="admin-section-heading">
-                    <div>
-                        <h3>System Directives</h3>
-                        <p>Use the grouped navigation to manage members, teller savings transactions, loan applications, repayments, and overdue credit files.</p>
+            <div class="admin-action-grid">
+                <section class="admin-card">
+                    <div class="admin-section-heading">
+                        <div>
+                            <h3>System Directives</h3>
+                            <p>Use the grouped navigation to manage members, teller savings transactions, loan applications, repayments, and overdue credit files.</p>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="admin-card">
-                <div class="admin-section-heading">
-                    <div>
-                        <h3>Month-End Savings Interest</h3>
-                        <p>Apply monthly savings interest at 5% per annum divided by 12 months. Run once during month-end processing.</p>
+                <section class="admin-card">
+                    <div class="admin-section-heading">
+                        <div>
+                            <h3>Month-End Savings Interest</h3>
+                            <p>Apply monthly savings interest at 5% per annum divided by 12 months. Run once during month-end processing.</p>
+                        </div>
                     </div>
-                </div>
-                <h:form>
-                    <h:commandButton value="Apply Monthly Interest"
-                                     action="#{adminDashboardBean.applyMonthlySavingsInterest()}"
-                                     styleClass="admin-primary-button"/>
-                </h:form>
-            </section>
+                    <h:form>
+                        <h:commandButton value="Apply Monthly Interest"
+                                         action="#{adminDashboardBean.applyMonthlySavingsInterest()}"
+                                         styleClass="admin-primary-button"/>
+                    </h:form>
+                </section>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

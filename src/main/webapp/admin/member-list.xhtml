@@ -44,7 +44,7 @@
                                     <th>Phone Number</th>
                                     <th>Role</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    <th class="admin-actions-col">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -61,6 +61,7 @@
                                             </span>
                                         </td>
                                         <td>
+                                            <div class="admin-table-actions">
                                             <h:commandButton value="Activate"
                                                              action="#{adminMemberBean.updateStatus(user.id, 'ACTIVE')}"
                                                              rendered="#{user.status != 'ACTIVE'}"
@@ -69,6 +70,7 @@
                                                              action="#{adminMemberBean.updateStatus(user.id, 'DEACTIVATED')}"
                                                              rendered="#{user.status == 'ACTIVE'}"
                                                              styleClass="admin-primary-button admin-danger-button"/>
+                                            </div>
                                         </td>
                                     </tr>
                                 </ui:repeat>
