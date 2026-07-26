@@ -8,35 +8,121 @@
     <ui:define name="title">Statements - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">Account Ledger Statement</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">Review historical deposits, withdrawals, and interest credits.</p>
-        </div>
+        <div class="dashboard-shell statement-shell">
+            <section class="dashboard-compact-header">
+                <div>
+                    <h2>Statements</h2>
+                    <p>Review savings and loan activity, then print or save the page as PDF.</p>
+                </div>
+            </section>
 
-        <section class="member-card">
-            <table class="simple-table">
-                <thead>
-                <tr>
-                    <th>Transaction Timestamp</th>
-                    <th>Description</th>
-                    <th>Type</th>
-                    <th style="text-align:right;">Amount (UGX)</th>
-                </tr>
-                </thead>
-                <tbody>
-                <ui:repeat value="#{memberPortalBean.statementHistory}" var="tx">
-                    <tr>
-                        <td><h:outputText value="#{tx.createdAt}"><f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/></h:outputText></td>
-                        <td>#{tx.description}</td>
-                        <td><span class="status-pill">#{tx.transactionType}</span></td>
-                        <td style="text-align:right; font-weight:700;"><h:outputText value="#{tx.amount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                    </tr>
-                </ui:repeat>
-                </tbody>
-            </table>
-            <h:panelGroup rendered="#{empty memberPortalBean.statementHistory}">
-                <p style="color:#6c757d; margin-bottom:0;">No statement transactions are available yet.</p>
-            </h:panelGroup>
-        </section>
+            <div class="dashboard-main-grid statement-summary-grid">
+                <section class="member-card dashboard-primary-card">
+                    <div class="dashboard-card-header">
+                        <div>
+                            <span class="summary-label">Savings Balance</span>
+                            <h1>UGX <h:outputText value="#{memberPortalBean.activeAccountBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></h1>
+                        </div>
+                    </div>
+                    <div class="dashboard-balance-breakdown">
+                        <div>
+                            <span>Account Ref</span>
+                            <strong>#{memberPortalBean.activeAccountNumber}</strong>
+                        </div>
+                        <div>
+                            <span>Available</span>
+                            <strong>UGX <h:outputText value="#{memberPortalBean.availableForWithdrawal}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="member-card dashboard-metric-card">
+                    <span class="summary-label">Active Loan Balance</span>
+                    <strong>UGX <h:outputText value="#{memberPortalBean.activeLoanOutstandingBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                    <p>Outstanding approved loan amount, if any.</p>
+                </section>
+
+                <section class="member-card dashboard-metric-card">
+                    <span class="summary-label">Monthly Interest Est.</span>
+                    <strong>UGX <h:outputText value="#{memberPortalBean.estimatedMonthlySavingsInterest}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                    <p>Estimated from your current savings balance.</p>
+                </section>
+            </div>
+
+            <section class="member-card statement-card">
+                <div class="statement-toolbar">
+                    <div>
+                        <h3>Ledger History</h3>
+                        <p>Switch between savings and loan records.</p>
+                    </div>
+                    <div class="statement-actions">
+                        <div class="statement-tabs">
+                            <button type="button" class="statement-tab active" onclick="showLedger('savings', this)">Savings Ledger</button>
+                            <button type="button" class="statement-tab" onclick="showLedger('loan', this)">Loan Ledger</button>
+                        </div>
+                        <h:form id="statementDownloadForm" styleClass="statement-download-form">
+                            <h:commandButton value="Download Savings PDF"
+                                             action="#{memberPortalBean.downloadSavingsStatementPdf()}"
+                                             styleClass="statement-print-button savings-download-button"/>
+                            <h:commandButton value="Download Loan PDF"
+                                             action="#{memberPortalBean.downloadLoanStatementPdf()}"
+                                             styleClass="statement-print-button secondary loan-download-button"/>
+                        </h:form>
+                    </div>
+                </div>
+
+                <div id="savingsLedger" class="statement-table-wrap">
+                    <table class="statement-table">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Transaction Type</th>
+                            <th class="amount-col">Amount</th>
+                            <th class="amount-col">Running Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{memberPortalBean.statementHistory}" var="tx">
+                            <tr>
+                                <td><h:outputText value="#{tx.createdAt}"><f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/></h:outputText></td>
+                                <td><span class="statement-badge">#{tx.transactionType}</span></td>
+                                <td class="amount-col">UGX <h:outputText value="#{tx.amount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                                <td class="amount-col">UGX <h:outputText value="#{memberPortalBean.getStatementRunningBalance(tx)}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                    <h:panelGroup rendered="#{empty memberPortalBean.statementHistory}">
+                        <div class="statement-empty-state">No savings ledger transactions are available yet.</div>
+                    </h:panelGroup>
+                </div>
+
+                <div id="loanLedger" class="statement-table-wrap" style="display:none;">
+                    <table class="statement-table">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Transaction Type</th>
+                            <th class="amount-col">Amount</th>
+                            <th class="amount-col">Running Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{memberPortalBean.personalLoans}" var="loan">
+                            <tr>
+                                <td><h:outputText value="#{loan.appliedAt}"><f:convertDateTime pattern="dd-MMM-yyyy"/></h:outputText></td>
+                                <td><span class="statement-badge">Loan Application</span></td>
+                                <td class="amount-col">UGX <h:outputText value="#{loan.principalAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                                <td class="amount-col">UGX <h:outputText value="#{loan.totalRepayable - loan.amountRepaid}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                    <h:panelGroup rendered="#{empty memberPortalBean.personalLoans}">
+                        <div class="statement-empty-state">No loan ledger records are available yet.</div>
+                    </h:panelGroup>
+                </div>
+            </section>
+        </div>
     </ui:define>
 </ui:composition>
