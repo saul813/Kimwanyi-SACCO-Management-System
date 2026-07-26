@@ -408,7 +408,7 @@ public class MemberPortalBean implements Serializable {
                     getActiveAccountNumber(),
                     getActiveLoanOutstandingBalance(),
                     getMaximumEligibleLoanAmount(),
-                    personalLoans,
+                    getLoanLedgerHistory(),
                     getLogoRealPath()
             );
             sendPdf(pdf, "kimwanyi-loan-statement.pdf");
@@ -529,6 +529,74 @@ public class MemberPortalBean implements Serializable {
         }
     }
     public List<Transaction> getStatementHistory() { return statementHistory; }
+    public List<LoanLedgerRow> getLoanLedgerHistory() {
+        class LoanLedgerEvent {
+            private final Date date;
+            private final String type;
+            private final BigDecimal amount;
+            private final BigDecimal balanceImpact;
+            private final int sortOrder;
+
+            private LoanLedgerEvent(Date date, String type, BigDecimal amount, BigDecimal balanceImpact, int sortOrder) {
+                this.date = date;
+                this.type = type;
+                this.amount = amount == null ? BigDecimal.ZERO : amount;
+                this.balanceImpact = balanceImpact == null ? BigDecimal.ZERO : balanceImpact;
+                this.sortOrder = sortOrder;
+            }
+        }
+
+        List<LoanLedgerEvent> events = new java.util.ArrayList<>();
+
+        for (Loan loan : personalLoans) {
+            events.add(new LoanLedgerEvent(
+                    loan.getAppliedAt(),
+                    "Loan Application - " + loan.getStatus(),
+                    loan.getPrincipalAmount(),
+                    loan.getTotalRepayable(),
+                    0
+            ));
+        }
+
+        for (Repayment repayment : personalRepayments) {
+            String repaymentReference = cleanActivityReference(repayment.getReceiptReference());
+            events.add(new LoanLedgerEvent(
+                    repayment.getPaidAt(),
+                    "Loan Repayment" + (repaymentReference == null || repaymentReference.isBlank() ? "" : " - " + repaymentReference),
+                    repayment.getAmount(),
+                    repayment.getAmount().negate(),
+                    1
+            ));
+        }
+
+        events = events.stream()
+                .filter(event -> event.date != null)
+                .sorted((left, right) -> {
+                    int dateComparison = left.date.compareTo(right.date);
+                    return dateComparison != 0 ? dateComparison : Integer.compare(left.sortOrder, right.sortOrder);
+                })
+                .collect(Collectors.toList());
+
+        List<LoanLedgerRow> rows = new java.util.ArrayList<>();
+        BigDecimal runningBalance = BigDecimal.ZERO;
+        for (LoanLedgerEvent event : events) {
+            runningBalance = runningBalance.add(event.balanceImpact);
+            if (runningBalance.compareTo(BigDecimal.ZERO) < 0) {
+                runningBalance = BigDecimal.ZERO;
+            }
+            rows.add(new LoanLedgerRow(
+                    event.date,
+                    event.type,
+                    event.amount,
+                    runningBalance
+            ));
+        }
+
+        return rows.stream()
+                .sorted((left, right) -> right.getActivityDate().compareTo(left.getActivityDate()))
+                .collect(Collectors.toList());
+    }
+
     public List<Loan> getPersonalLoans() { return personalLoans; }
     public Loan getActiveLoan() {
         return personalLoans.stream()
@@ -617,5 +685,26 @@ public class MemberPortalBean implements Serializable {
         public Date getActivityDate() { return activityDate; }
         public BigDecimal getAmount() { return amount; }
         public String getSource() { return source; }
+    }
+
+    public static class LoanLedgerRow implements StatementPdfService.LoanStatementRow, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final Date activityDate;
+        private final String activityType;
+        private final BigDecimal amount;
+        private final BigDecimal runningBalance;
+
+        public LoanLedgerRow(Date activityDate, String activityType, BigDecimal amount, BigDecimal runningBalance) {
+            this.activityDate = activityDate;
+            this.activityType = activityType;
+            this.amount = amount == null ? BigDecimal.ZERO : amount;
+            this.runningBalance = runningBalance == null ? BigDecimal.ZERO : runningBalance;
+        }
+
+        public Date getActivityDate() { return activityDate; }
+        public String getActivityType() { return activityType; }
+        public BigDecimal getAmount() { return amount; }
+        public BigDecimal getRunningBalance() { return runningBalance; }
     }
 }

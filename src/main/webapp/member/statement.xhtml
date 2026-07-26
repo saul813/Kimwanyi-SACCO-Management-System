@@ -108,17 +108,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <ui:repeat value="#{memberPortalBean.personalLoans}" var="loan">
+                        <ui:repeat value="#{memberPortalBean.loanLedgerHistory}" var="loanRow">
                             <tr>
-                                <td><h:outputText value="#{loan.appliedAt}"><f:convertDateTime pattern="dd-MMM-yyyy"/></h:outputText></td>
-                                <td><span class="statement-badge">Loan Application</span></td>
-                                <td class="amount-col">UGX <h:outputText value="#{loan.principalAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                                <td class="amount-col">UGX <h:outputText value="#{loan.totalRepayable - loan.amountRepaid}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                                <td><h:outputText value="#{loanRow.activityDate}"><f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/></h:outputText></td>
+                                <td><span class="statement-badge">#{loanRow.activityType}</span></td>
+                                <td class="amount-col">UGX <h:outputText value="#{loanRow.amount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                                <td class="amount-col">UGX <h:outputText value="#{loanRow.runningBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td>
                             </tr>
                         </ui:repeat>
                         </tbody>
                     </table>
-                    <h:panelGroup rendered="#{empty memberPortalBean.personalLoans}">
+                    <h:panelGroup rendered="#{empty memberPortalBean.loanLedgerHistory}">
                         <div class="statement-empty-state">No loan ledger records are available yet.</div>
                     </h:panelGroup>
                 </div>

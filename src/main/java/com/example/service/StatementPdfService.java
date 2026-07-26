@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.model.Loan;
 import com.example.model.Transaction;
 import com.example.model.User;
 
@@ -60,15 +59,15 @@ public class StatementPdfService {
                                      String accountNumber,
                                      BigDecimal activeLoanBalance,
                                      BigDecimal maximumEligibility,
-                                     List<Loan> loans,
+                                     List<? extends LoanStatementRow> ledgerRows,
                                      String logoPath) throws IOException {
         List<String[]> rows = new ArrayList<>();
-        for (Loan loan : loans) {
+        for (LoanStatementRow row : ledgerRows) {
             rows.add(new String[]{
-                    loan.getAppliedAt() == null ? "N/A" : DATE_ONLY.format(loan.getAppliedAt()),
-                    "Loan Application - " + loan.getStatus(),
-                    money(loan.getPrincipalAmount()),
-                    money(loan.getTotalRepayable().subtract(loan.getAmountRepaid()))
+                    row.getActivityDate() == null ? "N/A" : DATE_TIME.format(row.getActivityDate()),
+                    row.getActivityType(),
+                    money(row.getAmount()),
+                    money(row.getRunningBalance())
             });
         }
 
@@ -91,6 +90,13 @@ public class StatementPdfService {
     @FunctionalInterface
     public interface RunningBalanceResolver {
         BigDecimal resolve(Transaction transaction);
+    }
+
+    public interface LoanStatementRow {
+        Date getActivityDate();
+        String getActivityType();
+        BigDecimal getAmount();
+        BigDecimal getRunningBalance();
     }
 
     private static class SimplePdf {
