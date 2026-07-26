@@ -2,39 +2,130 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="jakarta.faces.html"
                 xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
                 template="/WEB-INF/templates/member-sidebar-template.xhtml">
 
-    <ui:define name="title">Apply for Loan - Kimwanyi SACCO</ui:define>
+    <ui:define name="title">Loans - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">Apply for a Loan</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">Submit a member credit request for administrative review.</p>
+        <div class="dashboard-shell loan-shell">
+            <section class="dashboard-compact-header">
+                <div>
+                    <h2>Loans</h2>
+                    <p>Track repayment status or apply for a new loan when eligible.</p>
+                </div>
+            </section>
+
+            <div class="dashboard-main-grid loan-summary-grid">
+                <section class="member-card dashboard-primary-card">
+                    <div class="dashboard-card-header">
+                        <div>
+                            <span class="summary-label">Active Loan Balance</span>
+                            <h1>UGX <h:outputText value="#{memberPortalBean.activeLoanOutstandingBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></h1>
+                        </div>
+                        <span class="dashboard-status-pill">
+                            <h:outputText value="#{empty memberPortalBean.activeLoan ? 'No active loan' : 'Active loan'}"/>
+                        </span>
+                    </div>
+                    <div class="dashboard-balance-breakdown">
+                        <div>
+                            <span>Interest Rule</span>
+                            <strong>10% flat</strong>
+                        </div>
+                        <div>
+                            <span>Due Date</span>
+                            <strong>#{memberPortalBean.activeLoanDueDateLabel}</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="member-card dashboard-metric-card">
+                    <span class="summary-label">Maximum Eligibility</span>
+                    <strong>UGX <h:outputText value="#{memberPortalBean.maximumEligibleLoanAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                    <p>Calculated as current savings balance x 3.</p>
+                </section>
+
+                <section class="member-card dashboard-metric-card">
+                    <span class="summary-label">Savings Basis</span>
+                    <strong>UGX <h:outputText value="#{memberPortalBean.activeAccountBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                    <p>Your current savings balance determines loan eligibility.</p>
+                </section>
+            </div>
+
+            <h:panelGroup rendered="#{memberPortalBean.activeLoanOverdue}">
+                <div class="loan-alert danger">This loan is overdue. Please make a repayment as soon as possible.</div>
+            </h:panelGroup>
+
+            <div class="loan-action-grid">
+                <section class="member-card loan-form-card">
+                    <div class="dashboard-section-heading">
+                        <div>
+                            <h3>Repay Loan</h3>
+                            <p>Available when you have an approved outstanding loan.</p>
+                        </div>
+                    </div>
+
+                    <h:panelGroup rendered="#{empty memberPortalBean.activeLoan}">
+                        <div class="loan-empty-state">You do not have an approved outstanding loan to repay.</div>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{not empty memberPortalBean.activeLoan}">
+                        <h:form id="repaymentForm" styleClass="loan-form-stack">
+                            <div class="loan-detail-grid">
+                                <div><span>Principal</span><strong>UGX <h:outputText value="#{memberPortalBean.activeLoanPrincipalAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong></div>
+                                <div><span>Repaid</span><strong>UGX <h:outputText value="#{memberPortalBean.activeLoanAmountRepaid}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong></div>
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel for="repayAmount" value="Repayment Amount (UGX)"/>
+                                <h:inputText id="repayAmount" value="#{memberPortalBean.loanRepaymentAmount}" required="true"
+                                             requiredMessage="Repayment amount is required." styleClass="login-input"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="repayRef" value="Payment Reference"/>
+                                <h:inputText id="repayRef" value="#{memberPortalBean.loanRepaymentReference}" styleClass="login-input"/>
+                            </div>
+                            <h:commandButton value="Repay Loan" action="#{memberPortalBean.processLoanRepayment()}" styleClass="login-native-submit loan-submit"/>
+                        </h:form>
+                    </h:panelGroup>
+                </section>
+
+                <section class="member-card loan-form-card application-card">
+                    <div class="dashboard-section-heading">
+                        <div>
+                            <h3>Loan Application</h3>
+                            <p>Apply only when you have no active loan.</p>
+                        </div>
+                    </div>
+
+                    <h:panelGroup rendered="#{not empty memberPortalBean.activeLoan}">
+                        <div class="loan-alert">You currently have an active loan. Fully repay it before applying for a new one.</div>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{empty memberPortalBean.activeLoan}">
+                        <h:form id="loanRequestForm" styleClass="loan-form-stack">
+                            <div class="loan-info-note">
+                                Maximum eligible amount: UGX <h:outputText value="#{memberPortalBean.maximumEligibleLoanAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="loanAmount" value="Loan Amount (UGX)"/>
+                                <h:inputText id="loanAmount" value="#{memberPortalBean.requestedLoanPrincipal}" required="true"
+                                             requiredMessage="Please specify a valid loan principal amount value."
+                                             styleClass="login-input"
+                                             onkeyup="previewLoan(this)"/>
+                                <small id="loanPreview" class="form-help">Interest preview appears as you type.</small>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="loanReason" value="Reason for Loan Application"/>
+                                <h:inputTextarea id="loanReason" value="#{memberPortalBean.requestedLoanReason}" required="true"
+                                                 requiredMessage="Please provide a reason for this loan application."
+                                                 styleClass="login-input loan-reason-input"/>
+                            </div>
+                            <h:commandButton value="Submit Loan Application" action="#{memberPortalBean.applyForLoan()}" styleClass="login-native-submit loan-apply-submit"/>
+                        </h:form>
+                    </h:panelGroup>
+                </section>
+            </div>
         </div>
-
-        <section class="member-card" style="max-width:650px;">
-            <h3>Request New Community Empowerment Loan</h3>
-            <h:form id="loanRequestForm">
-                <div style="background:#eff6ff; padding:15px; border-radius:6px; margin-bottom:20px; border:1px solid #bfdbfe; font-size:14px; line-height:1.5; color:#1e40af;">
-                    <strong>Underwriting Rules:</strong> Maximum credit ceiling is <strong>3x your active savings balance</strong>. Fresh borrowing is blocked if you have an unresolved active loan.
-                </div>
-
-                <div class="form-group">
-                    <h:outputLabel for="loanAmount" value="Desired Principal Value (UGX)"/>
-                    <h:inputText id="loanAmount" value="#{memberPortalBean.requestedLoanPrincipal}"
-                                 required="true"
-                                 requiredMessage="Please specify a valid loan principal amount value."
-                                 styleClass="login-input"
-                                 style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px; font-size:15px; font-family:inherit; background:#ffffff; color:#212529;"/>
-                </div>
-
-                <div class="form-actions">
-                    <h:commandButton value="Submit Online Credit Application"
-                                     action="#{memberPortalBean.applyForLoan()}"
-                                     styleClass="login-native-submit"
-                                     style="display:block; width:100%; min-height:44px; box-sizing:border-box; border:1px solid #0d6efd; border-radius:8px; background:#0d6efd; color:#ffffff; font-family:inherit; font-size:16px; font-weight:700; cursor:pointer;"/>
-                </div>
-            </h:form>
-        </section>
     </ui:define>
 </ui:composition>
