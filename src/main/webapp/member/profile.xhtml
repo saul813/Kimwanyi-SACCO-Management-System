@@ -7,53 +7,239 @@
     <ui:define name="title">My Profile - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div class="member-page-header">
-            <h2>My Profile</h2>
-            <p>Update editable contact and security details. Verified membership identity is admin-controlled.</p>
-        </div>
+        <div class="dashboard-shell profile-shell">
+            <div class="dashboard-compact-header">
+                <div>
+                    <h2>My Profile</h2>
+                    <p>View your membership credentials and update only the fields that members are allowed to change.</p>
+                </div>
+            </div>
 
-        <div class="member-dashboard-grid">
-            <section class="member-card">
-                <h3>Editable Profile Details</h3>
-                <h:form id="contactForm" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <h:outputLabel for="profilePhoto" value="Profile Picture"/>
-                        <input id="profilePhoto" type="file" class="login-input" accept="image/*"/>
-                        <small class="form-help">Upload control is ready; permanent photo storage needs a profile image field or file-storage location.</small>
+            <section id="profileCredentialsCard" class="member-card profile-card">
+                <div class="profile-card-header">
+                    <div>
+                        <h3>Member Credentials</h3>
+                        <p>Verified identity and account records.</p>
                     </div>
-                    <div class="form-group">
-                        <h:outputLabel for="phone" value="Phone Number"/>
-                        <h:inputText id="phone" value="#{memberPortalBean.profilePhoneNumber}" required="true" styleClass="login-input"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputLabel for="email" value="Email Address"/>
-                        <h:inputText id="email" value="#{memberPortalBean.profileEmailAddress}" required="true" styleClass="login-input"/>
-                    </div>
-                    <h:commandButton value="Save Contact Details" action="#{memberPortalBean.updateProfileContactDetails()}" styleClass="login-native-submit"/>
-                </h:form>
+                    <button type="button" class="profile-primary-button" onclick="showProfileUpdateForm()">Update Profile</button>
+                </div>
 
-                <h:form id="passwordModificationForm" style="margin-top:24px;">
-                    <h3>Password Change</h3>
-                    <div class="form-group">
-                        <h:outputLabel for="currentPassword" value="Current Password"/>
-                        <h:inputSecret id="currentPassword" value="#{memberPortalBean.currentPasswordInput}" required="true" styleClass="login-input"/>
+                <div class="profile-credentials-grid">
+                    <div class="profile-credential">
+                        <span>Full Legal Name</span>
+                        <strong>#{authBean.loggedInUser.fullName}</strong>
                     </div>
-                    <div class="form-group">
-                        <h:outputLabel for="newPassword" value="New Password"/>
-                        <h:inputSecret id="newPassword" value="#{memberPortalBean.newPasswordInput}" required="true" styleClass="login-input"/>
+                    <div class="profile-credential">
+                        <span>National ID / NIN</span>
+                        <strong>#{authBean.loggedInUser.nationalId}</strong>
                     </div>
-                    <h:commandButton value="Change Password" action="#{memberPortalBean.updateProfilePassword()}" styleClass="login-native-submit"/>
-                </h:form>
+                    <div class="profile-credential">
+                        <span>Savings Account Ref</span>
+                        <strong>#{memberPortalBean.activeAccountNumber}</strong>
+                    </div>
+                    <div class="profile-credential">
+                        <span>Phone Number</span>
+                        <strong>#{authBean.loggedInUser.phoneNumber}</strong>
+                    </div>
+                    <div class="profile-credential">
+                        <span>Email Address</span>
+                        <strong>#{authBean.loggedInUser.email}</strong>
+                    </div>
+                    <div class="profile-credential">
+                        <span>Portal Role</span>
+                        <strong><span class="status-pill">#{authBean.loggedInUser.role}</span></strong>
+                    </div>
+                    <div class="profile-credential">
+                        <span>Account Status</span>
+                        <strong><span class="status-pill">#{authBean.loggedInUser.status}</span></strong>
+                    </div>
+                </div>
+
+                <div class="profile-admin-note">
+                    Full name, National ID, savings account reference, portal role, and account status are locked. Contact SACCO administration if any verified credential is incorrect.
+                </div>
             </section>
 
-            <section class="member-card readonly-card">
-                <h3>Verified Membership Details</h3>
-                <p class="member-muted">Contact Admin to change these records.</p>
-                <div class="info-row"><span class="info-label">Full Legal Name</span><span class="info-value">#{authBean.loggedInUser.fullName}</span></div>
-                <div class="info-row"><span class="info-label">National ID (NIN)</span><span class="info-value">#{authBean.loggedInUser.nationalId}</span></div>
-                <div class="info-row"><span class="info-label">Portal Role</span><span class="status-pill">#{authBean.loggedInUser.role}</span></div>
-                <div class="info-row" style="border-bottom:none;"><span class="info-label">Account Status</span><span class="status-pill">#{authBean.loggedInUser.status}</span></div>
+            <section id="profileUpdateCard" class="member-card profile-card profile-update-card" style="display:none;">
+                <div class="profile-card-header update-header">
+                    <div>
+                        <h3>Editable Credentials</h3>
+                        <p>Only phone number, email address, and portal password can be updated here.</p>
+                    </div>
+                    <button type="button" class="profile-secondary-button" onclick="showProfileCredentials()">Back to Credentials</button>
+                </div>
+
+                <div class="profile-form-section">
+                    <h:form id="contactForm">
+                        <h3>Contact Details</h3>
+                        <div class="profile-form-grid">
+                            <div class="form-group">
+                                <h:outputLabel for="phone" value="Phone Number"/>
+                                <h:inputText id="phone" value="#{memberPortalBean.profilePhoneNumber}" required="true" styleClass="login-input"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="email" value="Email Address"/>
+                                <h:inputText id="email" value="#{memberPortalBean.profileEmailAddress}" required="true" styleClass="login-input"/>
+                            </div>
+                        </div>
+                        <h:commandButton value="Save Contact Details"
+                                         action="#{memberPortalBean.updateProfileContactDetails()}"
+                                         styleClass="login-native-submit profile-submit-button"/>
+                    </h:form>
+                </div>
+
+                <div class="profile-form-section password-section">
+                    <h:form id="passwordModificationForm">
+                        <h3>Password Change</h3>
+                        <div class="profile-form-grid">
+                            <div class="form-group">
+                                <h:outputLabel for="currentPassword" value="Current Password"/>
+                                <h:inputSecret id="currentPassword" value="#{memberPortalBean.currentPasswordInput}" required="true" styleClass="login-input"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel for="newPassword" value="New Password"/>
+                                <h:inputSecret id="newPassword" value="#{memberPortalBean.newPasswordInput}" required="true" styleClass="login-input"/>
+                            </div>
+                        </div>
+                        <h:commandButton value="Change Password"
+                                         action="#{memberPortalBean.updateProfilePassword()}"
+                                         styleClass="login-native-submit profile-submit-button secondary-submit"/>
+                    </h:form>
+                </div>
             </section>
         </div>
+
+        <style>
+            .profile-shell { gap:14px; }
+            .profile-card { padding:0; overflow:hidden; border-top:3px solid #d4a017; }
+            .profile-card-header {
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+                gap:16px;
+                padding:14px 18px;
+                background:#ffffff;
+                color:#081f33;
+                border-bottom:1px solid #edf0f2;
+            }
+            .profile-card-header h3 { margin:0 0 4px; color:#081f33; font-size:16px; font-weight:600; letter-spacing:-0.1px; }
+            .profile-card-header p { margin:0; color:#64748b; font-size:13px; line-height:1.45; }
+            .update-header { border-top:3px solid #081f33; }
+            .profile-primary-button,
+            .profile-secondary-button {
+                border-radius:8px;
+                padding:9px 12px;
+                font:inherit;
+                font-size:13px;
+                font-weight:600;
+                cursor:pointer;
+                white-space:nowrap;
+            }
+            .profile-primary-button { border:1px solid #8a6500; background:#8a6500; color:#ffffff; }
+            .profile-secondary-button { border:1px solid #cfd8d3; background:#ffffff; color:#475569; }
+            .profile-credentials-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); }
+            .profile-credential {
+                min-height:70px;
+                padding:15px 18px;
+                border-right:1px solid #edf0f2;
+                border-bottom:1px solid #edf0f2;
+                background:#ffffff;
+                box-sizing:border-box;
+            }
+            .profile-credential span {
+                display:block;
+                color:#64748b;
+                font-size:12px;
+                font-weight:500;
+                text-transform:uppercase;
+                letter-spacing:0.35px;
+            }
+            .profile-credential strong {
+                display:block;
+                margin-top:5px;
+                color:#081f33;
+                font-size:14px;
+                font-weight:600;
+                word-break:break-word;
+            }
+            .profile-admin-note {
+                margin:14px 18px 18px;
+                border:1px solid rgba(212,160,23,0.34);
+                background:#fff8df;
+                color:#664d03;
+                border-radius:8px;
+                padding:10px 12px;
+                font-size:13px;
+                line-height:1.4;
+            }
+            .profile-form-section { padding:18px; }
+            .profile-form-section h3 { margin:0 0 12px; color:#081f33; font-size:16px; font-weight:600; }
+            .password-section { border-top:1px solid #edf0f2; background:#fbfcfb; }
+            .profile-form-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+            .profile-form-section .form-group { margin-bottom:14px; }
+            .profile-form-section label { display:block; margin-bottom:7px; color:#243447; font-size:13px; font-weight:600; }
+            .profile-form-section .login-input {
+                display:block;
+                width:100% !important;
+                max-width:none !important;
+                height:38px;
+                box-sizing:border-box;
+                border:1px solid #cfd8d3;
+                border-radius:7px;
+                padding:8px 10px;
+                font:inherit;
+                font-size:14px;
+                background:#ffffff;
+                color:#081f33;
+            }
+            .profile-form-section .login-input:focus {
+                outline:none;
+                border-color:#d4a017;
+                box-shadow:0 0 0 3px rgba(212,160,23,0.14);
+            }
+            .profile-submit-button {
+                width:auto !important;
+                min-height:38px;
+                border-radius:7px !important;
+                background:#081f33 !important;
+                border-color:#081f33 !important;
+                color:#ffffff !important;
+                padding:8px 13px !important;
+                font:inherit !important;
+                font-size:14px !important;
+                font-weight:500 !important;
+                cursor:pointer;
+            }
+            .secondary-submit { background:#8a6500 !important; border-color:#8a6500 !important; }
+            @media (max-width: 800px) {
+                .profile-card-header { flex-direction:column; }
+                .profile-primary-button,
+                .profile-secondary-button,
+                .profile-submit-button { width:100% !important; }
+                .profile-form-grid { grid-template-columns:1fr; }
+            }
+        </style>
+
+        <script>
+            function showProfileUpdateForm() {
+                var credentialsCard = document.getElementById('profileCredentialsCard');
+                var updateCard = document.getElementById('profileUpdateCard');
+                if (credentialsCard) credentialsCard.style.display = 'none';
+                if (updateCard) {
+                    updateCard.style.display = 'block';
+                    updateCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            function showProfileCredentials() {
+                var credentialsCard = document.getElementById('profileCredentialsCard');
+                var updateCard = document.getElementById('profileUpdateCard');
+                if (updateCard) updateCard.style.display = 'none';
+                if (credentialsCard) {
+                    credentialsCard.style.display = 'block';
+                    credentialsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        </script>
     </ui:define>
 </ui:composition>
