@@ -307,6 +307,8 @@
 <h:body>
     <h:messages id="memberTemplateMsg"
                 globalOnly="false"
+                showSummary="false"
+                showDetail="true"
                 style="position:fixed; top:15px; right:15px; z-index:9999; list-style:none; padding:0; margin:0; max-width:360px;"
                 errorStyle="display:block; background:#f8d7da; color:#842029; border:1px solid #f5c2c7; border-radius:8px; padding:10px 12px; margin-bottom:8px;"
                 infoStyle="display:block; background:#d1e7dd; color:#0f5132; border:1px solid #badbcc; border-radius:8px; padding:10px 12px; margin-bottom:8px;"
@@ -378,6 +380,16 @@
             buttons.forEach(function (btn) { btn.classList.remove('active'); });
             button.classList.add('active');
         }
+
+        window.setTimeout(function () {
+            var messages = document.getElementById('memberTemplateMsg');
+            if (!messages) return;
+            messages.style.transition = 'opacity 0.25s ease';
+            messages.style.opacity = '0';
+            window.setTimeout(function () {
+                messages.style.display = 'none';
+            }, 250);
+        }, 5000);
     </script>
 </h:body>
 </html>
