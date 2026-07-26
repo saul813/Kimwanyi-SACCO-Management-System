@@ -8,50 +8,95 @@
     <ui:define name="title">Savings - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">Savings Transactions</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">Deposit, withdraw, view balance, and estimate savings interest.</p>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px;">
-            <section class="member-card" style="border-left:5px solid #198754;">
-                <h3>Current Savings Balance</h3>
-                <p>Account: <code>#{memberPortalBean.activeAccountNumber}</code></p>
-                <h2 style="font-size:32px; color:#198754; margin:0;">
-                    UGX <h:outputText value="#{memberPortalBean.activeAccountBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText>
-                </h2>
-                <p style="color:#6c757d;">Minimum balance maintained: UGX 20,000</p>
-                <p style="color:#0d6efd; font-weight:700;">
-                    Estimated monthly interest: UGX <h:outputText value="#{memberPortalBean.estimatedMonthlySavingsInterest}"><f:convertNumber pattern="#,##0.00"/></h:outputText>
-                </p>
+        <div class="dashboard-shell savings-shell">
+            <section class="dashboard-compact-header">
+                <div>
+                    <h2>Savings</h2>
+                    <p>Deposit funds or withdraw while keeping the UGX 20,000 minimum balance.</p>
+                </div>
             </section>
 
-            <section class="member-card">
-                <h3>Post Deposit / Withdrawal</h3>
-                <h:form id="savingsForm">
-                    <div class="form-group">
-                        <h:outputLabel for="amount" value="Amount (UGX)"/>
-                        <h:inputText id="amount" value="#{memberPortalBean.savingsTransactionAmount}" required="true"
-                                     requiredMessage="Amount is required."
-                                     styleClass="login-input"
-                                     style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px;"/>
+            <div class="dashboard-main-grid savings-summary-grid">
+                <section class="member-card dashboard-primary-card">
+                    <div class="dashboard-card-header">
+                        <div>
+                            <span class="summary-label">Current Balance</span>
+                            <h1>UGX <h:outputText value="#{memberPortalBean.activeAccountBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></h1>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <h:outputLabel for="description" value="Description / Reference"/>
-                        <h:inputText id="description" value="#{memberPortalBean.savingsTransactionDescription}"
-                                     styleClass="login-input"
-                                     style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px;"/>
+                    <div class="dashboard-balance-breakdown">
+                        <div>
+                            <span>Account Ref</span>
+                            <strong>#{memberPortalBean.activeAccountNumber}</strong>
+                        </div>
+                        <div>
+                            <span>Monthly Interest Est.</span>
+                            <strong>UGX <h:outputText value="#{memberPortalBean.estimatedMonthlySavingsInterest}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                        </div>
                     </div>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <h:commandButton value="Deposit"
-                                         action="#{memberPortalBean.processMemberDeposit()}"
-                                         style="border:0; background:#198754; color:#fff; border-radius:6px; padding:10px 14px; font-weight:700; cursor:pointer;"/>
-                        <h:commandButton value="Withdraw"
-                                         action="#{memberPortalBean.processMemberWithdrawal()}"
-                                         style="border:0; background:#dc3545; color:#fff; border-radius:6px; padding:10px 14px; font-weight:700; cursor:pointer;"/>
+                </section>
+
+                <section class="member-card dashboard-metric-card">
+                    <span class="summary-label">Available for Withdrawal</span>
+                    <strong>UGX <h:outputText value="#{memberPortalBean.availableForWithdrawal}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                    <p>Calculated after reserving the required UGX 20,000 minimum balance.</p>
+                </section>
+
+                <section class="member-card dashboard-metric-card">
+                    <span class="summary-label">Minimum Balance</span>
+                    <strong>UGX 20,000.00</strong>
+                    <p>This amount must remain in your savings account after withdrawal.</p>
+                </section>
+            </div>
+
+            <div class="savings-action-grid">
+                <section class="member-card savings-form-card deposit-card">
+                    <div class="dashboard-section-heading">
+                        <div>
+                            <h3>Deposit</h3>
+                            <p>Add money to your savings account.</p>
+                        </div>
                     </div>
-                </h:form>
-            </section>
+
+                    <h:form id="depositForm" styleClass="savings-form-stack">
+                        <div class="form-group">
+                            <h:outputLabel for="depositAmount" value="Amount (UGX)"/>
+                            <h:inputText id="depositAmount" value="#{memberPortalBean.savingsTransactionAmount}" required="true"
+                                         requiredMessage="Deposit amount is required." styleClass="login-input"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="depositRef" value="Reference / Note"/>
+                            <h:inputText id="depositRef" value="#{memberPortalBean.savingsTransactionDescription}" styleClass="login-input"/>
+                        </div>
+                        <h:commandButton value="Post Deposit" action="#{memberPortalBean.processMemberDeposit()}" styleClass="login-native-submit savings-submit"/>
+                    </h:form>
+                </section>
+
+                <section class="member-card savings-form-card withdraw-card">
+                    <div class="dashboard-section-heading">
+                        <div>
+                            <h3>Withdraw</h3>
+                            <p>Request funds from your savings account.</p>
+                        </div>
+                    </div>
+
+                    <h:form id="withdrawForm" styleClass="savings-form-stack">
+                        <div class="savings-warning-note">Minimum balance rule: UGX 20,000 must remain after withdrawal.</div>
+                        <div class="form-group">
+                            <h:outputLabel for="withdrawAmount" value="Amount (UGX)"/>
+                            <h:inputText id="withdrawAmount" value="#{memberPortalBean.savingsTransactionAmount}" required="true"
+                                         requiredMessage="Withdrawal amount is required." styleClass="login-input"
+                                         onkeyup="previewWithdrawal(this, #{memberPortalBean.activeAccountBalance})"/>
+                            <small id="withdrawPreview" class="form-help"></small>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="withdrawRef" value="Reference / Note"/>
+                            <h:inputText id="withdrawRef" value="#{memberPortalBean.savingsTransactionDescription}" styleClass="login-input"/>
+                        </div>
+                        <h:commandButton value="Request Withdrawal" action="#{memberPortalBean.processMemberWithdrawal()}" styleClass="login-native-submit savings-withdraw-submit"/>
+                    </h:form>
+                </section>
+            </div>
         </div>
     </ui:define>
 </ui:composition>
