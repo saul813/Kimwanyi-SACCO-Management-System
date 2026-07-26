@@ -100,6 +100,19 @@ public class LoanDAO {
         }
     }
 
+    public List<Repayment> findRepaymentsByUserId(Long userId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "SELECT r FROM Repayment r JOIN FETCH r.loan l JOIN FETCH l.member WHERE l.member.id = :uid ORDER BY r.paidAt DESC",
+                            Repayment.class)
+                    .setParameter("uid", userId)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
     // Atomically updates a loan record balance and commits a repayment ledger receipt item
     public void processLoanRepayment(Loan loan, Repayment repayment) {
         Transaction transaction = null;

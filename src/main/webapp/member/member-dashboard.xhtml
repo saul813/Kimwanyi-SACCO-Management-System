@@ -75,32 +75,33 @@
                 <div class="dashboard-section-heading">
                     <div>
                         <h3>Latest Activity</h3>
-                        <p>Last 3 transactions.</p>
+                        <p>Last 3 savings and loan activities.</p>
                     </div>
                     <h:link outcome="/member/statement.xhtml" value="Full Statement" styleClass="dashboard-inline-link"/>
                 </div>
 
-                <h:panelGroup rendered="#{not empty memberPortalBean.recentTransactions}">
+                <h:panelGroup rendered="#{not empty memberPortalBean.recentActivities}">
                     <div class="dashboard-activity-list">
-                        <ui:repeat value="#{memberPortalBean.recentTransactions}" var="tx">
+                        <ui:repeat value="#{memberPortalBean.recentActivities}" var="activity">
                             <div class="dashboard-activity-item">
                                 <div class="activity-type-marker">
-                                    <span>#{tx.transactionType}</span>
+                                    <span>#{activity.activityType}</span>
+                                    <small class="activity-source">#{activity.source}</small>
                                 </div>
                                 <div class="activity-main">
-                                    <p>#{tx.description}</p>
-                                    <small><h:outputText value="#{tx.createdAt}"><f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/></h:outputText></small>
+                                    <p>#{activity.description}</p>
+                                    <small><h:outputText value="#{activity.activityDate}"><f:convertDateTime pattern="dd-MMM-yyyy HH:mm"/></h:outputText></small>
                                 </div>
-                                <strong class="activity-amount">UGX <h:outputText value="#{tx.amount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                                <strong class="activity-amount">UGX <h:outputText value="#{activity.amount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
                             </div>
                         </ui:repeat>
                     </div>
                 </h:panelGroup>
 
-                <h:panelGroup rendered="#{empty memberPortalBean.recentTransactions}">
+                <h:panelGroup rendered="#{empty memberPortalBean.recentActivities}">
                     <div class="dashboard-empty-state">
                         <strong>No recent activity yet.</strong>
-                        <span>Your deposits, withdrawals, and interest credits will appear here after they are posted.</span>
+                        <span>Your savings transactions, loan applications, and loan repayments will appear here after they are posted.</span>
                     </div>
                 </h:panelGroup>
             </section>

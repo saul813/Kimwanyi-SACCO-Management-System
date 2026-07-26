@@ -46,6 +46,7 @@ public class MemberPortalBean implements Serializable {
     private SavingsAccount activeAccount;
     private List<Transaction> statementHistory;
     private List<Loan> personalLoans;
+    private List<Repayment> personalRepayments;
     private Map<Long, BigDecimal> statementRunningBalances = new HashMap<>();
 
     // Interactive credit application variables
@@ -71,6 +72,7 @@ public class MemberPortalBean implements Serializable {
             if (currentSessionUser != null) {
                 this.activeAccount = accountDAO.findByUserId(currentSessionUser.getId());
                 this.personalLoans = loanDAO.findLoansByUserId(currentSessionUser.getId());
+                this.personalRepayments = loanDAO.findRepaymentsByUserId(currentSessionUser.getId());
                 this.profilePhoneNumber = currentSessionUser.getPhoneNumber();
                 this.profileEmailAddress = currentSessionUser.getEmail();
                 if (activeAccount != null) {
@@ -82,6 +84,7 @@ public class MemberPortalBean implements Serializable {
         } catch (Throwable ex) {
             this.activeAccount = null;
             this.personalLoans = Collections.emptyList();
+            this.personalRepayments = Collections.emptyList();
             this.statementHistory = Collections.emptyList();
             dataAvailable = false;
             dataStatusMessage = "Member data unavailable. Check database connection and credentials.";
@@ -90,6 +93,9 @@ public class MemberPortalBean implements Serializable {
 
         if (this.personalLoans == null) {
             this.personalLoans = Collections.emptyList();
+        }
+        if (this.personalRepayments == null) {
+            this.personalRepayments = Collections.emptyList();
         }
         if (this.statementHistory == null) {
             this.statementHistory = Collections.emptyList();
@@ -181,7 +187,7 @@ public class MemberPortalBean implements Serializable {
         tx.setCreatedAt(new Date());
         tx.setDescription(savingsTransactionDescription == null || savingsTransactionDescription.isBlank()
                 ? "Member self-service savings deposit."
-                : savingsTransactionDescription.trim());
+                : "[Member] " + savingsTransactionDescription.trim());
 
         accountDAO.processLedgerTransaction(activeAccount, tx);
         reloadMemberData();
@@ -219,7 +225,7 @@ public class MemberPortalBean implements Serializable {
         tx.setCreatedAt(new Date());
         tx.setDescription(savingsTransactionDescription == null || savingsTransactionDescription.isBlank()
                 ? "Member self-service savings withdrawal."
-                : savingsTransactionDescription.trim());
+                : "[Member] " + savingsTransactionDescription.trim());
 
         accountDAO.processLedgerTransaction(activeAccount, tx);
         reloadMemberData();
@@ -280,6 +286,7 @@ public class MemberPortalBean implements Serializable {
         if (currentSessionUser != null) {
             this.activeAccount = accountDAO.findByUserId(currentSessionUser.getId());
             this.personalLoans = loanDAO.findLoansByUserId(currentSessionUser.getId());
+            this.personalRepayments = loanDAO.findRepaymentsByUserId(currentSessionUser.getId());
             this.statementHistory = activeAccount != null ? accountDAO.findStatementsByAccountId(activeAccount.getId()) : Collections.emptyList();
         }
         rebuildStatementRunningBalances();
@@ -444,6 +451,57 @@ public class MemberPortalBean implements Serializable {
     public List<Transaction> getRecentTransactions() {
         return statementHistory.stream().limit(3).collect(Collectors.toList());
     }
+
+    public List<MemberActivity> getRecentActivities() {
+        List<MemberActivity> activities = new java.util.ArrayList<>();
+
+        for (Transaction tx : statementHistory) {
+            activities.add(new MemberActivity(
+                    tx.getTransactionType() == null ? "Savings Activity" : tx.getTransactionType().toString(),
+                    tx.getDescription(),
+                    tx.getCreatedAt(),
+                    tx.getAmount(),
+                    resolveSavingsActivitySource(tx)
+            ));
+        }
+
+        for (Loan loan : personalLoans) {
+            activities.add(new MemberActivity(
+                    "Loan Application",
+                    "Loan application status: " + loan.getStatus(),
+                    loan.getAppliedAt(),
+                    loan.getPrincipalAmount(),
+                    "Member"
+            ));
+        }
+
+        for (Repayment repayment : personalRepayments) {
+            activities.add(new MemberActivity(
+                    "Loan Repayment",
+                    "Loan repayment" + (repayment.getReceiptReference() == null || repayment.getReceiptReference().isBlank() ? "" : " - " + repayment.getReceiptReference()),
+                    repayment.getPaidAt(),
+                    repayment.getAmount(),
+                    resolveLoanRepaymentSource(repayment)
+            ));
+        }
+
+        return activities.stream()
+                .filter(activity -> activity.getActivityDate() != null)
+                .sorted((left, right) -> right.getActivityDate().compareTo(left.getActivityDate()))
+                .limit(3)
+                .collect(Collectors.toList());
+    }
+
+    private String resolveSavingsActivitySource(Transaction transaction) {
+        String description = transaction == null || transaction.getDescription() == null ? "" : transaction.getDescription().toLowerCase();
+        return description.contains("member self-service") || description.contains("[member]") ? "Member" : "Admin";
+    }
+
+    private String resolveLoanRepaymentSource(Repayment repayment) {
+        String reference = repayment == null || repayment.getReceiptReference() == null ? "" : repayment.getReceiptReference();
+        return "MEMBER-SELF-SERVICE".equalsIgnoreCase(reference) ? "Member" : "Admin";
+    }
+
     public BigDecimal getStatementRunningBalance(Transaction transaction) {
         if (transaction == null || transaction.getId() == null) {
             return BigDecimal.ZERO;
@@ -528,4 +586,28 @@ public class MemberPortalBean implements Serializable {
     public void setProfilePhoneNumber(String profilePhoneNumber) { this.profilePhoneNumber = profilePhoneNumber; }
     public String getProfileEmailAddress() { return profileEmailAddress; }
     public void setProfileEmailAddress(String profileEmailAddress) { this.profileEmailAddress = profileEmailAddress; }
+
+    public static class MemberActivity implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final String activityType;
+        private final String description;
+        private final Date activityDate;
+        private final BigDecimal amount;
+        private final String source;
+
+        public MemberActivity(String activityType, String description, Date activityDate, BigDecimal amount, String source) {
+            this.activityType = activityType;
+            this.description = description == null || description.isBlank() ? activityType : description;
+            this.activityDate = activityDate;
+            this.amount = amount == null ? BigDecimal.ZERO : amount;
+            this.source = source == null || source.isBlank() ? "Admin" : source;
+        }
+
+        public String getActivityType() { return activityType; }
+        public String getDescription() { return description; }
+        public Date getActivityDate() { return activityDate; }
+        public BigDecimal getAmount() { return amount; }
+        public String getSource() { return source; }
+    }
 }
