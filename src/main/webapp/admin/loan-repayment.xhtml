@@ -25,67 +25,67 @@
             </div>
 
             <h:form id="loanRepaymentForm">
-                <h:panelGroup layout="block" rendered="#{empty adminRepaymentBean.outstandingLoans}"
+                <h:panelGroup layout="block" rendered="#{empty adminRepaymentBean.repaymentRows}"
                               styleClass="admin-empty-state">
                     No approved outstanding loans are awaiting repayment.
                 </h:panelGroup>
 
                 <div class="admin-table-wrap">
-                    <h:dataTable id="repaymentTable" value="#{adminRepaymentBean.outstandingLoans}" var="loan"
-                                 rendered="#{not empty adminRepaymentBean.outstandingLoans}"
+                    <h:dataTable id="repaymentTable" value="#{adminRepaymentBean.repaymentRows}" var="row"
+                                 rendered="#{not empty adminRepaymentBean.repaymentRows}"
                                  styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">Borrower</f:facet>
-                        <strong>#{loan.member.fullName}</strong>
+                        <strong>#{row.loan.member.fullName}</strong>
                         <br/>
-                        <small><h:outputText value="#{loan.member.nationalId}"/></small>
+                        <small><h:outputText value="#{row.loan.member.nationalId}"/></small>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Total Repayable</f:facet>
-                        <h:outputText value="#{loan.totalRepayable}">
+                        <h:outputText value="#{row.loan.totalRepayable}">
                             <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
                         </h:outputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Repaid</f:facet>
-                        <h:outputText value="#{loan.amountRepaid}">
+                        <h:outputText value="#{row.loan.amountRepaid}">
                             <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
                         </h:outputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Outstanding</f:facet>
-                        <h:outputText value="#{adminRepaymentBean.getOutstandingBalance(loan)}" styleClass="admin-danger-text">
+                        <h:outputText value="#{adminRepaymentBean.getOutstandingBalance(row.loan)}" styleClass="admin-danger-text">
                             <f:convertNumber type="currency" currencySymbol="UGX " maxFractionDigits="0"/>
                         </h:outputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Due Date</f:facet>
-                        <h:outputText value="#{loan.dueDate}">
+                        <h:outputText value="#{row.loan.dueDate}">
                             <f:convertDateTime pattern="dd-MMM-yyyy"/>
                         </h:outputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Repayment Amount</f:facet>
-                        <h:inputText value="#{adminRepaymentBean.repaymentAmount}" styleClass="login-input admin-compact-input">
+                        <h:inputText value="#{row.repaymentAmount}" styleClass="login-input admin-compact-input">
                             <f:convertNumber maxFractionDigits="2"/>
                         </h:inputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Receipt Ref</f:facet>
-                        <h:inputText value="#{adminRepaymentBean.receiptReference}" styleClass="login-input admin-compact-input"/>
+                        <h:inputText value="#{row.receiptReference}" styleClass="login-input admin-compact-input"/>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Action</f:facet>
                         <div class="admin-table-actions">
                             <h:commandButton value="Post"
-                                             action="#{adminRepaymentBean.postRepayment(loan.id)}"
+                                             action="#{adminRepaymentBean.postRepayment(row)}"
                                              styleClass="admin-primary-button"/>
                         </div>
                     </h:column>

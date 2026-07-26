@@ -23,21 +23,30 @@ public class AdminRepaymentBean implements Serializable {
     @Inject private LoanDAO loanDAO;
 
     private List<Loan> outstandingLoans;
-    private BigDecimal repaymentAmount;
-    private String receiptReference;
+    private List<RepaymentRow> repaymentRows;
 
     @PostConstruct
     public void init() {
         reloadOutstandingLoans();
-        this.receiptReference = generateReceiptReference();
     }
 
     public void reloadOutstandingLoans() {
         this.outstandingLoans = loanDAO.findApprovedOutstandingLoans();
+        this.repaymentRows = outstandingLoans.stream()
+                .map(loan -> new RepaymentRow(loan, generateReceiptReference()))
+                .toList();
     }
 
-    public void postRepayment(Long loanId) {
+    public void postRepayment(RepaymentRow row) {
         FacesContext context = FacesContext.getCurrentInstance();
+        if (row == null || row.getLoan() == null || row.getLoan().getId() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Loan", "Select a valid outstanding loan row before posting repayment."));
+            return;
+        }
+
+        Long loanId = row.getLoan().getId();
+        BigDecimal repaymentAmount = row.getRepaymentAmount();
+        String receiptReference = row.getReceiptReference();
 
         if (repaymentAmount == null || repaymentAmount.compareTo(BigDecimal.ZERO) <= 0) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Amount", "Enter a repayment amount greater than zero."));
@@ -70,8 +79,6 @@ public class AdminRepaymentBean implements Serializable {
         loanDAO.processLoanRepayment(loan, repayment);
 
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Repayment Posted", "Loan repayment recorded successfully."));
-        repaymentAmount = null;
-        receiptReference = generateReceiptReference();
         reloadOutstandingLoans();
     }
 
@@ -87,8 +94,24 @@ public class AdminRepaymentBean implements Serializable {
     }
 
     public List<Loan> getOutstandingLoans() { return outstandingLoans; }
-    public BigDecimal getRepaymentAmount() { return repaymentAmount; }
-    public void setRepaymentAmount(BigDecimal repaymentAmount) { this.repaymentAmount = repaymentAmount; }
-    public String getReceiptReference() { return receiptReference; }
-    public void setReceiptReference(String receiptReference) { this.receiptReference = receiptReference; }
+    public List<RepaymentRow> getRepaymentRows() { return repaymentRows; }
+
+    public static class RepaymentRow implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final Loan loan;
+        private BigDecimal repaymentAmount;
+        private String receiptReference;
+
+        public RepaymentRow(Loan loan, String receiptReference) {
+            this.loan = loan;
+            this.receiptReference = receiptReference;
+        }
+
+        public Loan getLoan() { return loan; }
+        public BigDecimal getRepaymentAmount() { return repaymentAmount; }
+        public void setRepaymentAmount(BigDecimal repaymentAmount) { this.repaymentAmount = repaymentAmount; }
+        public String getReceiptReference() { return receiptReference; }
+        public void setReceiptReference(String receiptReference) { this.receiptReference = receiptReference; }
+    }
 }
