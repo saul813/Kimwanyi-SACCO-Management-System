@@ -26,6 +26,8 @@ public class AuthorizationFilter implements Filter {
         String contextPath = httpRequest.getContextPath();
         String uri = httpRequest.getRequestURI();
 
+        preventProtectedPageCaching(httpResponse);
+
         User loggedInUser = authBean != null ? authBean.getLoggedInUser() : null;
         if (loggedInUser == null) {
             httpResponse.sendRedirect(contextPath + "/login.xhtml");
@@ -43,5 +45,11 @@ public class AuthorizationFilter implements Filter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private void preventProtectedPageCaching(HttpServletResponse response) {
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
     }
 }
