@@ -26,7 +26,10 @@ public class AccountDAO {
     // Finds an account profile using the unique internal Member User reference ID
     public SavingsAccount findByUserId(Long userId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<SavingsAccount> query = session.createQuery("FROM SavingsAccount WHERE member.id = :uid", SavingsAccount.class);
+            Query<SavingsAccount> query = session.createQuery(
+                    "SELECT a FROM SavingsAccount a JOIN FETCH a.member WHERE a.member.id = :uid",
+                    SavingsAccount.class
+            );
             query.setParameter("uid", userId);
             return query.uniqueResult();
         } catch (Exception e) {
@@ -42,7 +45,8 @@ public class AccountDAO {
             transaction = session.beginTransaction();
 
             // Updates account balances and creates the transaction item
-            session.merge(account);
+            SavingsAccount managedAccount = session.merge(account);
+            ledgerEntry.setAccount(managedAccount);
             session.persist(ledgerEntry);
 
             transaction.commit();
@@ -66,7 +70,10 @@ public class AccountDAO {
 
     public List<SavingsAccount> findAllAccounts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM SavingsAccount ORDER BY accountNumber ASC", SavingsAccount.class).list();
+            return session.createQuery(
+                    "SELECT a FROM SavingsAccount a JOIN FETCH a.member ORDER BY a.accountNumber ASC",
+                    SavingsAccount.class
+            ).list();
         } catch (Exception e) {
             e.printStackTrace();
             return List.of();

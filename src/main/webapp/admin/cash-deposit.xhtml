@@ -35,7 +35,7 @@
                                          styleClass="admin-primary-button admin-lookup-button"/>
                     </div>
 
-                    <h:panelGroup rendered="#{transactionBean.targetAccount != null}">
+                    <h:panelGroup layout="block" rendered="#{transactionBean.targetAccount != null}">
                         <div class="admin-savings-layout">
                             <div class="admin-account-panel">
                                 <p><strong>Member Name:</strong> #{transactionBean.targetAccount.member.fullName}</p>
