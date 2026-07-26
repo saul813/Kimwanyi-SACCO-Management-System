@@ -9,18 +9,18 @@
     <h:outputStylesheet library="css" name="custom-style.css"/>
     <style>
         body { margin: 0; overflow-x: hidden; }
-        .identity-wrapper { min-height: 100vh; padding: 16px 24px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; background: linear-gradient(135deg, #ffffff, #f4f6f5); }
-        .identity-shell { width: 100%; max-width: 1080px; min-height: 600px; display: grid; grid-template-columns: 46% 54%; background: #ffffff; border-radius: 30px; overflow: hidden; box-shadow: 0 28px 80px rgba(8,31,51,.16); }
-        .identity-visual { position: relative; min-height: 600px; padding: 34px; display: flex; flex-direction: column; justify-content: flex-end; color: #ffffff; overflow: hidden; background: #081f33; box-sizing: border-box; }
+        .identity-wrapper { min-height: 100vh; padding: 12px 24px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; background: linear-gradient(135deg, #ffffff, #f4f6f5); }
+        .identity-shell { --auth-radius: 28px; width: 100%; max-width: 1080px; min-height: min(540px, calc(100vh - 24px)); display: grid; grid-template-columns: 46% 54%; align-items: stretch; background: transparent !important; border-radius: 0 !important; overflow: visible; box-shadow: none !important; }
+        .identity-visual { position: relative; min-height: min(540px, calc(100vh - 24px)); padding: 34px; display: flex; flex-direction: column; justify-content: flex-end; color: #ffffff; overflow: hidden; background: #081f33; box-sizing: border-box; border-radius: var(--auth-radius) 0 0 var(--auth-radius) !important; }
         .identity-visual::before { content: ""; position: absolute; inset: 0; background: url("#{request.contextPath}/resources/images/hero/teachers.png") center/cover no-repeat; }
         .identity-visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,31,51,.18), rgba(8,31,51,.84)), linear-gradient(90deg, rgba(0,96,65,.74), rgba(8,31,51,.18)); }
         .identity-visual-content { position: relative; z-index: 1; }
         .identity-visual-badge { display: inline-flex; margin-bottom: 16px; padding: 8px 12px; border-radius: 999px; background: rgba(212,160,23,.22); border: 1px solid rgba(212,160,23,.44); color: #fff8df; font-size: 13px; font-weight: 800; }
         .identity-visual h1 { margin: 0 0 12px; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.06; letter-spacing: -1px; }
         .identity-visual p { margin: 0; color: #e7edf0; line-height: 1.7; font-size: 17px; }
-        .identity-card { padding: 16px 42px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; background: #ffffff; overflow: hidden; }
+        .identity-card { position: relative; z-index: 1; min-height: min(540px, calc(100vh - 24px)); padding: 18px 42px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; background: #ffffff; overflow: hidden; border-radius: 0 var(--auth-radius) var(--auth-radius) 0 !important; }
         .identity-card .identity-header, .identity-card form { width: 100%; max-width: 430px; margin-left: auto; margin-right: auto; }
-        .identity-header { text-align: center; margin-bottom: 12px; }
+        .identity-header { text-align: center; margin-bottom: 14px; }
         .identity-header h2 { color: #081f33 !important; margin: 0 0 5px; font-size: 24px; font-weight: 800; }
         .identity-header p { font-size: 13px; line-height: 1.3; margin: 0; }
         .identity-logo-mark { width: 46px !important; height: 46px !important; margin: 0 auto 8px; border-radius: 14px; overflow: hidden; background: #fff8df; border: 2px solid rgba(212,160,23,.7); display: flex; align-items: center; justify-content: center; }
@@ -28,13 +28,13 @@
         .form-group { margin-bottom: 8px; }
         .form-group label { margin-bottom: 5px; font-size: 13px; }
         .login-input { display: block; width: 100% !important; height: 34px; box-sizing: border-box; border: 1px solid #ced4da; border-radius: 8px; padding: 6px 11px; font-size: 14px; }
-        .form-actions { margin-top: 12px; }
+        .form-actions { margin-top: 14px; }
         .login-native-submit { width: 100% !important; min-height: 38px; border: 1px solid #006041 !important; border-radius: 999px !important; background: #006041 !important; color: #ffffff !important; font-weight: 800; cursor: pointer; }
-        .register-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 12px; }
+        .register-form-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
         .register-form-grid .form-group { margin-bottom: 0; }
         .register-form-grid .form-group-wide { grid-column: 1 / -1; }
         .redirect-link { margin-top: 10px; font-size: 13px; }
-        @media (max-width: 900px) { .identity-shell { grid-template-columns: 1fr; max-width: 620px; } .identity-visual { min-height: 240px; } .identity-card { padding: 32px 24px; } .register-form-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .identity-shell { grid-template-columns: 1fr; max-width: 620px; } .identity-visual { min-height: 240px; border-radius: 28px 28px 0 0; } .identity-card { padding: 32px 24px; border-radius: 0 0 28px 28px; } .register-form-grid { grid-template-columns: 1fr; } }
     </style>
 </h:head>
 <h:body>

@@ -458,7 +458,7 @@ public class MemberPortalBean implements Serializable {
         for (Transaction tx : statementHistory) {
             activities.add(new MemberActivity(
                     tx.getTransactionType() == null ? "Savings Activity" : tx.getTransactionType().toString(),
-                    tx.getDescription(),
+                    cleanActivityReference(tx.getDescription()),
                     tx.getCreatedAt(),
                     tx.getAmount(),
                     resolveSavingsActivitySource(tx)
@@ -507,7 +507,10 @@ public class MemberPortalBean implements Serializable {
         if (reference == null) {
             return null;
         }
-        return reference.replace("[Member]", "").trim();
+        return reference
+                .replaceAll("(?i)\\[member\\]", "")
+                .replaceAll("(?i)\\[admin\\]", "")
+                .trim();
     }
 
     public BigDecimal getStatementRunningBalance(Transaction transaction) {

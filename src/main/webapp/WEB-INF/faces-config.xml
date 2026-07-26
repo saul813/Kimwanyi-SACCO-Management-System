@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="https://jakarta.ee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jakarta.ee https://jakarta.ee/web-facesconfig_4_0.xsd"
+              version="4.0">
+
+    <!-- Configure localized system rendering defaults -->
+    <application>
+        <!-- Instructs JSF to handle empty string inputs as null database parameters cleanly -->
+        <interpret-empty-string-submitted-values-as-null>true</interpret-empty-string-submitted-values-as-null>
+    </application>
+
+    <!-- Global Application Navigation Routing Matrix Rules -->
+    <navigation-rule>
+        <from-view-id>/*</from-view-id>
+
+        <!-- Standard login portal navigation vector case -->
+        <navigation-case>
+            <from-outcome>login</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- Standard public registration onboarding case -->
+        <navigation-case>
+            <from-outcome>register</from-outcome>
+            <to-view-id>/register.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- Standard error fallback case -->
+        <navigation-case>
+            <from-outcome>error</from-outcome>
+            <to-view-id>/error.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+</faces-config>

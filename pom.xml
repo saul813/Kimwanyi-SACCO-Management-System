@@ -56,14 +56,6 @@
     <version>4.0.1</version>
   </dependency>
 
-  <!-- PrimeFaces Component Library -->
-  <dependency>
-    <groupId>org.primefaces</groupId>
-    <artifactId>primefaces</artifactId>
-    <version>14.0.0</version> <!-- Uses the modern Jakarta namespace matching Jakarta EE 10 -->
-    <classifier>jakarta</classifier>
-  </dependency>
-
   <!-- MariaDB/MySQL Database Driver Connector -->
   <dependency>
     <groupId>org.mariadb.jdbc</groupId>
