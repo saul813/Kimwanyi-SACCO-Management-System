@@ -263,7 +263,7 @@ public class MemberPortalBean implements Serializable {
         repayment.setPaidAt(new Date());
         repayment.setReceiptReference(loanRepaymentReference == null || loanRepaymentReference.isBlank()
                 ? "MEMBER-SELF-SERVICE"
-                : loanRepaymentReference.trim());
+                : "[Member] " + loanRepaymentReference.trim());
 
         loanDAO.processLoanRepayment(activeLoan, repayment);
         reloadMemberData();
@@ -476,9 +476,10 @@ public class MemberPortalBean implements Serializable {
         }
 
         for (Repayment repayment : personalRepayments) {
+            String repaymentReference = cleanActivityReference(repayment.getReceiptReference());
             activities.add(new MemberActivity(
                     "Loan Repayment",
-                    "Loan repayment" + (repayment.getReceiptReference() == null || repayment.getReceiptReference().isBlank() ? "" : " - " + repayment.getReceiptReference()),
+                    "Loan repayment" + (repaymentReference == null || repaymentReference.isBlank() ? "" : " - " + repaymentReference),
                     repayment.getPaidAt(),
                     repayment.getAmount(),
                     resolveLoanRepaymentSource(repayment)
@@ -499,7 +500,14 @@ public class MemberPortalBean implements Serializable {
 
     private String resolveLoanRepaymentSource(Repayment repayment) {
         String reference = repayment == null || repayment.getReceiptReference() == null ? "" : repayment.getReceiptReference();
-        return "MEMBER-SELF-SERVICE".equalsIgnoreCase(reference) ? "Member" : "Admin";
+        return "MEMBER-SELF-SERVICE".equalsIgnoreCase(reference) || reference.toLowerCase().contains("[member]") ? "Member" : "Admin";
+    }
+
+    private String cleanActivityReference(String reference) {
+        if (reference == null) {
+            return null;
+        }
+        return reference.replace("[Member]", "").trim();
     }
 
     public BigDecimal getStatementRunningBalance(Transaction transaction) {
