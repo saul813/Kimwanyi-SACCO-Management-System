@@ -31,6 +31,9 @@ public class Loan implements Serializable {
     @Column(name = "amount_repaid", nullable = false, precision = 15, scale = 2)
     private BigDecimal amountRepaid = BigDecimal.ZERO;
 
+    @Column(name = "loan_reason", length = 500)
+    private String loanReason;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private LoanStatus status = LoanStatus.PENDING; // PENDING, APPROVED, REJECTED, FULLY_REPAID
@@ -71,6 +74,9 @@ public class Loan implements Serializable {
 
     public BigDecimal getAmountRepaid() { return amountRepaid; }
     public void setAmountRepaid(BigDecimal amountRepaid) { this.amountRepaid = amountRepaid; }
+
+    public String getLoanReason() { return loanReason; }
+    public void setLoanReason(String loanReason) { this.loanReason = loanReason; }
 
     public LoanStatus getStatus() { return status; }
     public void setStatus(LoanStatus status) { this.status = status; }
