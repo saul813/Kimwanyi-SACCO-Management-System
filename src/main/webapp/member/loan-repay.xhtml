@@ -8,45 +8,71 @@
     <ui:define name="title">Repay Loan - Kimwanyi SACCO</ui:define>
 
     <ui:define name="content">
-        <div style="margin-bottom:25px;">
-            <h2 style="margin:0; color:#212529;">Loan Repayment</h2>
-            <p style="margin:5px 0 0 0; color:#6c757d;">Repay your currently approved outstanding loan.</p>
+        <div class="dashboard-shell loan-shell">
+            <section class="dashboard-compact-header">
+                <div>
+                    <h2>Loan Repayment</h2>
+                    <p>Repay your currently approved outstanding loan.</p>
+                </div>
+            </section>
+
+            <section class="member-card loan-form-card loan-repayment-card">
+                <div class="dashboard-section-heading">
+                    <div>
+                        <h3>Active Loan Status</h3>
+                        <p>Review the outstanding loan position before posting repayment.</p>
+                    </div>
+                </div>
+
+                <h:panelGroup rendered="#{empty memberPortalBean.activeLoan}">
+                    <div class="loan-empty-state">You do not have an approved outstanding loan to repay.</div>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{not empty memberPortalBean.activeLoan}">
+                    <div class="loan-detail-grid loan-repayment-detail-grid">
+                        <div>
+                            <span>Principal</span>
+                            <strong>UGX <h:outputText value="#{memberPortalBean.activeLoan.principalAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                        </div>
+                        <div>
+                            <span>Total Repayable</span>
+                            <strong>UGX <h:outputText value="#{memberPortalBean.activeLoan.totalRepayable}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                        </div>
+                        <div>
+                            <span>Amount Repaid</span>
+                            <strong>UGX <h:outputText value="#{memberPortalBean.activeLoan.amountRepaid}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                        </div>
+                        <div>
+                            <span>Outstanding</span>
+                            <strong>UGX <h:outputText value="#{memberPortalBean.activeLoanOutstandingBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong>
+                        </div>
+                        <div>
+                            <span>Due Date</span>
+                            <strong><h:outputText value="#{memberPortalBean.activeLoan.dueDate}"><f:convertDateTime pattern="dd-MMM-yyyy"/></h:outputText></strong>
+                        </div>
+                    </div>
+
+                    <h:form id="repaymentForm" styleClass="loan-form-stack">
+                        <div class="form-group">
+                            <h:outputLabel for="repayAmount" value="Repayment Amount (UGX)"/>
+                            <h:inputText id="repayAmount"
+                                         value="#{memberPortalBean.loanRepaymentAmount}"
+                                         required="true"
+                                         requiredMessage="Repayment amount is required."
+                                         styleClass="login-input"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="repayRef" value="Payment Reference"/>
+                            <h:inputText id="repayRef"
+                                         value="#{memberPortalBean.loanRepaymentReference}"
+                                         styleClass="login-input"/>
+                        </div>
+                        <h:commandButton value="Submit Loan Repayment"
+                                         action="#{memberPortalBean.processLoanRepayment()}"
+                                         styleClass="login-native-submit loan-submit"/>
+                    </h:form>
+                </h:panelGroup>
+            </section>
         </div>
-
-        <section class="member-card" style="max-width:760px;">
-            <h3>Active Loan Status</h3>
-            <h:panelGroup rendered="#{empty memberPortalBean.activeLoan}">
-                <p style="color:#6c757d;">You do not have an approved outstanding loan to repay.</p>
-            </h:panelGroup>
-
-            <h:panelGroup rendered="#{not empty memberPortalBean.activeLoan}">
-                <table class="simple-table" style="margin-bottom:18px;">
-                    <tr><th>Principal</th><td>UGX <h:outputText value="#{memberPortalBean.activeLoan.principalAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td></tr>
-                    <tr><th>Total Repayable</th><td>UGX <h:outputText value="#{memberPortalBean.activeLoan.totalRepayable}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td></tr>
-                    <tr><th>Amount Repaid</th><td>UGX <h:outputText value="#{memberPortalBean.activeLoan.amountRepaid}"><f:convertNumber pattern="#,##0.00"/></h:outputText></td></tr>
-                    <tr><th>Outstanding</th><td><strong>UGX <h:outputText value="#{memberPortalBean.activeLoanOutstandingBalance}"><f:convertNumber pattern="#,##0.00"/></h:outputText></strong></td></tr>
-                    <tr><th>Due Date</th><td><h:outputText value="#{memberPortalBean.activeLoan.dueDate}"><f:convertDateTime pattern="dd-MMM-yyyy"/></h:outputText></td></tr>
-                </table>
-
-                <h:form id="repaymentForm">
-                    <div class="form-group">
-                        <h:outputLabel for="repayAmount" value="Repayment Amount (UGX)"/>
-                        <h:inputText id="repayAmount" value="#{memberPortalBean.loanRepaymentAmount}" required="true"
-                                     requiredMessage="Repayment amount is required."
-                                     styleClass="login-input"
-                                     style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px;"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputLabel for="repayRef" value="Payment Reference"/>
-                        <h:inputText id="repayRef" value="#{memberPortalBean.loanRepaymentReference}"
-                                     styleClass="login-input"
-                                     style="display:block; width:100%; height:44px; box-sizing:border-box; border:1px solid #ced4da; border-radius:8px; padding:10px 12px;"/>
-                    </div>
-                    <h:commandButton value="Submit Loan Repayment"
-                                     action="#{memberPortalBean.processLoanRepayment()}"
-                                     style="border:0; background:#198754; color:#fff; border-radius:6px; padding:10px 14px; font-weight:700; cursor:pointer;"/>
-                </h:form>
-            </h:panelGroup>
-        </section>
     </ui:define>
 </ui:composition>

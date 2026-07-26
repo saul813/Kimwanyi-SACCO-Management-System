@@ -9,27 +9,298 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <h:outputStylesheet library="css" name="custom-style.css"/>
     <style>
-        .member-app-container { display:flex; min-height:100vh; }
-        .member-sidebar { width:250px; background:#0d6efd; color:#fff; padding:20px 0; flex-shrink:0; }
-        .member-sidebar-brand { font-size:20px; font-weight:800; text-align:center; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.25); margin-bottom:20px; }
+        .member-app-container { display:flex; min-height:100vh; background:#f7faf8; }
+        .member-sidebar {
+            width:260px;
+            background:
+                radial-gradient(circle at top left, rgba(212,160,23,0.18), transparent 34%),
+                linear-gradient(180deg, #0b7a55 0%, #178f68 100%);
+            color:#ffffff;
+            padding:22px 0;
+            flex-shrink:0;
+            border-right:1px solid rgba(0,96,65,0.12);
+            box-shadow:8px 0 24px rgba(0,96,65,0.10);
+        }
+        .member-sidebar-brand { font-size:20px; font-weight:800; padding:0 22px 22px; border-bottom:1px solid rgba(255,255,255,0.18); margin-bottom:18px; letter-spacing:-0.3px; color:#ffffff; }
+        .member-sidebar-brand small { display:block; margin-top:5px; color:#fff8df; font-size:12px; text-transform:uppercase; letter-spacing:0.4px; }
         .member-sidebar-menu { display:flex; flex-direction:column; gap:6px; padding:0 10px; }
-        .member-sidebar-link { color:#e9f2ff; text-decoration:none; padding:12px 15px; border-radius:8px; font-weight:600; display:block; }
-        .member-sidebar-link:hover { background:rgba(255,255,255,0.14); color:#fff; }
-        .member-main-workspace { flex-grow:1; background:#f8f9fa; display:flex; flex-direction:column; }
-        .member-topbar { min-height:65px; background:#fff; border-bottom:1px solid #dee2e6; display:flex; justify-content:space-between; align-items:center; padding:0 30px; }
-        .member-content-body { padding:30px; flex-grow:1; }
-        .member-card { background:#fff; border:1px solid #dee2e6; border-radius:10px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
-        .member-card h3 { margin:0 0 16px 0; color:#212529; }
-        .simple-table { width:100%; border-collapse:collapse; }
-        .simple-table th, .simple-table td { padding:10px; border-bottom:1px solid #dee2e6; text-align:left; }
-        .status-pill { display:inline-block; padding:4px 8px; border-radius:999px; background:#fff3cd; color:#664d03; font-size:13px; font-weight:700; }
+        .member-sidebar-link { color:#f1f7f4; text-decoration:none; padding:12px 15px; border-radius:8px; font-weight:700; display:block; border:1px solid transparent; transition:all .2s; }
+        .member-sidebar-link:hover { background:rgba(255,255,255,0.16); border-color:rgba(255,248,223,0.34); color:#ffffff; transform:translateX(2px); }
+        .member-main-workspace {
+            flex-grow:1;
+            background:
+                radial-gradient(circle at 88% 8%, rgba(212,160,23,0.14), transparent 26%),
+                linear-gradient(135deg, #ffffff 0%, #f7faf8 48%, #eef7f2 100%);
+            display:flex;
+            flex-direction:column;
+            min-width:0;
+        }
+        .member-topbar { min-height:72px; background:rgba(255,255,255,0.94); border-bottom:1px solid rgba(8,31,51,0.08); display:flex; justify-content:space-between; align-items:center; padding:0 32px; box-shadow:0 10px 26px rgba(8,31,51,0.06); }
+        .member-topbar-title { font-weight:600; color:#081f33; letter-spacing:-0.1px; }
+        .member-content-body { padding:24px; flex-grow:1; }
+        .member-page-header {
+            margin-bottom:25px;
+            background:
+                radial-gradient(circle at top right, rgba(212,160,23,0.18), transparent 30%),
+                linear-gradient(135deg, #ffffff, #eef7f2);
+            border:1px solid rgba(0,96,65,0.09);
+            border-radius:14px;
+            padding:24px;
+            box-shadow:0 8px 20px rgba(0,96,65,0.05);
+        }
+        .member-page-header h2 { margin:0; color:#006041; font-size:28px; letter-spacing:-0.4px; font-weight:700; }
+        .member-page-header p { margin:6px 0 0; color:#64748b; line-height:1.5; }
+        .member-card { background:#ffffff; border:1px solid #e4e9e7; border-radius:10px; padding:14px; box-shadow:0 4px 12px rgba(8,31,51,0.04); }
+        .member-card h3 { margin:0 0 10px 0; color:#081f33; font-size:16px; font-weight:600; letter-spacing:-0.1px; }
+        .member-card-highlight { border-top:4px solid #20a06f; }
+        .member-card-accent { border-top:4px solid #d4a017; }
+        .member-dashboard-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px; }
+        .member-balance { font-size:34px; color:#006041; margin:0; letter-spacing:-0.7px; }
+        .member-muted { color:#64748b; }
+        .member-interest { color:#006041; font-weight:800; }
+        .member-actions { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+        .member-action-primary, .member-action-secondary { padding:10px 14px; border-radius:999px; text-decoration:none; font-weight:800; display:inline-flex; align-items:center; justify-content:center; }
+        .member-action-primary { background:#006041; color:#fff; }
+        .member-action-secondary { background:#d4a017; color:#081f33; }
+        .member-action-primary:hover, .member-action-secondary:hover { text-decoration:none; filter:brightness(1.04); }
+        .dashboard-shell { display:flex; flex-direction:column; gap:14px; }
+        .dashboard-compact-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:14px;
+            padding:0 0 4px;
+            border-bottom:1px solid #e4e9e7;
+        }
+        .dashboard-compact-header h2 { margin:0; color:#081f33; font-size:24px; line-height:1.2; font-weight:600; letter-spacing:-0.3px; }
+        .dashboard-compact-header p { margin:4px 0 0; color:#64748b; font-size:14px; line-height:1.4; }
+        .dashboard-hero {
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:18px;
+            background:linear-gradient(135deg, #006041, #0b7a55);
+            color:#ffffff;
+            border-radius:14px;
+            padding:24px;
+            box-shadow:0 10px 24px rgba(0,96,65,0.12);
+        }
+        .dashboard-hero h2 { margin:6px 0 8px; font-size:30px; line-height:1.15; letter-spacing:-0.4px; color:#ffffff; font-weight:700; }
+        .dashboard-hero p { margin:0; max-width:720px; color:#e7edf0; line-height:1.55; font-size:15px; }
+        .dashboard-eyebrow { color:#f8d66d; font-size:12px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; }
+        .dashboard-account-chip { min-width:180px; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.22); border-radius:10px; padding:12px 14px; }
+        .dashboard-account-chip span, .dashboard-balance-breakdown span { display:block; color:#dbe7e2; font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.3px; }
+        .dashboard-account-chip strong { display:block; margin-top:4px; color:#ffffff; word-break:break-word; }
+        .dashboard-main-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; }
+        .dashboard-primary-card { border-top:3px solid #d4a017; }
+        .dashboard-card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-direction:column; }
+        .dashboard-primary-card h1 { margin:6px 0 0; color:#081f33; font-size:26px; line-height:1.1; letter-spacing:-0.4px; font-weight:600; }
+        .dashboard-status-pill { display:inline-flex; align-items:center; border-radius:6px; background:#fff8df; color:#664d03; padding:4px 7px; font-size:11px; font-weight:500; white-space:nowrap; }
+        .dashboard-balance-breakdown { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid #edf0f2; }
+        .dashboard-balance-breakdown div { background:transparent; border:0; border-radius:0; padding:0; }
+        .dashboard-balance-breakdown span { color:#64748b; }
+        .dashboard-balance-breakdown strong { display:block; margin-top:3px; color:#081f33; font-size:13px; font-weight:600; }
+        .dashboard-note { margin-top:10px; background:#fff8df; border:1px solid rgba(212,160,23,0.34); color:#664d03; border-radius:8px; padding:8px 9px; font-weight:400; font-size:13px; line-height:1.35; }
+        .dashboard-action-stack { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; }
+        .dashboard-action-card { display:block; padding:10px 12px; border:1px solid #dee2e6; border-radius:8px; background:#ffffff; color:#081f33; text-decoration:none; transition:transform .18s, border-color .18s, box-shadow .18s; }
+        .dashboard-action-card:hover { transform:translateY(-1px); border-color:rgba(212,160,23,0.45); box-shadow:0 8px 18px rgba(8,31,51,0.07); text-decoration:none; }
+        .dashboard-action-card span { display:block; font-size:14px; font-weight:600; }
+        .dashboard-action-card small { display:block; margin-top:2px; color:#64748b; line-height:1.35; font-size:12px; }
+        .dashboard-action-card.primary-action { background:#081f33; border-color:#081f33; color:#ffffff; }
+        .dashboard-action-card.primary-action small { color:#d7dee5; }
+        .dashboard-metric-card strong { display:block; margin-top:6px; color:#081f33; font-size:22px; line-height:1.15; font-weight:600; letter-spacing:-0.2px; }
+        .dashboard-metric-card p { min-height:auto; margin:8px 0 10px; color:#64748b; line-height:1.4; font-size:13px; }
+        .dashboard-inline-link { color:#8a6500; font-weight:500; text-decoration:none; font-size:13px; }
+        .dashboard-inline-link:hover { text-decoration:underline; }
+        .dashboard-section-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:10px; }
+        .dashboard-section-heading h3 { margin-bottom:4px; }
+        .dashboard-section-heading p { margin:0; color:#64748b; font-size:13px; }
+        .dashboard-activity-card { padding-bottom:12px; }
+        .dashboard-activity-list { display:flex; flex-direction:column; gap:8px; }
+        .dashboard-activity-item {
+            display:grid;
+            grid-template-columns:110px minmax(0, 1fr) auto;
+            align-items:center;
+            gap:14px;
+            padding:10px 12px;
+            border:1px solid #edf0f2;
+            border-radius:8px;
+            background:#fbfcfb;
+        }
+        .dashboard-activity-item:hover { background:#ffffff; border-color:#dfe7e3; }
+        .activity-type-marker span {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:100%;
+            min-height:28px;
+            border-radius:6px;
+            background:#fff8df;
+            color:#664d03;
+            font-size:11px;
+            font-weight:500;
+            text-transform:capitalize;
+        }
+        .activity-main p { margin:0 0 3px; color:#081f33; font-weight:400; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .activity-main small { color:#64748b; font-size:12px; }
+        .activity-amount { color:#081f33; white-space:nowrap; font-weight:600; font-size:13px; text-align:right; }
+        .dashboard-empty-state { display:flex; flex-direction:column; gap:6px; border:1px dashed #ced4da; border-radius:10px; padding:16px; color:#64748b; }
+        .dashboard-empty-state strong { color:#081f33; }
+        .simple-table { width:100%; border-collapse:collapse; min-width:620px; }
+        .simple-table th, .simple-table td { padding:12px 10px; border-bottom:1px solid #edf0f2; text-align:left; }
+        .simple-table th { background:#f4f6f5; color:#081f33; font-size:12px; text-transform:uppercase; letter-spacing:0.4px; }
+        .table-scroll { overflow-x:auto; border:1px solid rgba(8,31,51,0.08); border-radius:10px; }
+        .status-pill { display:inline-block; padding:3px 7px; border-radius:6px; background:#fff3cd; color:#664d03; font-size:11px; font-weight:500; }
+        .savings-summary-grid { margin-bottom:0; }
+        .savings-action-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+        .savings-form-card { border-top:3px solid #d4a017; display:flex; flex-direction:column; }
+        .deposit-card { border-top-color:#081f33; }
+        .withdraw-card { border-top-color:#d4a017; }
+        .savings-info-note, .savings-warning-note { border-radius:8px; padding:8px 9px; margin-bottom:12px; font-size:13px; line-height:1.35; font-weight:400; }
+        .savings-info-note { background:#f8fbf9; color:#475569; border:1px solid #e4e9e7; }
+        .savings-warning-note { background:#fff8df; color:#664d03; border:1px solid rgba(212,160,23,0.34); }
+        .savings-form-card form { width:100%; }
+        .savings-form-stack { display:flex; flex-direction:column; flex:1; }
+        .savings-form-card .form-group { width:100%; margin-bottom:14px; }
+        .savings-form-card label { display:block; margin-bottom:7px; color:#243447; font-size:13px; font-weight:600; }
+        .savings-form-card input[type="text"],
+        .savings-form-card input[type="number"],
+        .savings-form-card .login-input {
+            display:block;
+            width:100% !important;
+            max-width:none !important;
+            height:38px;
+            box-sizing:border-box;
+            border:1px solid #cfd8d3;
+            border-radius:7px;
+            padding:8px 10px;
+            font:inherit;
+            font-size:14px;
+            background:#ffffff;
+            color:#081f33;
+        }
+        .savings-form-card input[type="text"]:focus,
+        .savings-form-card input[type="number"]:focus,
+        .savings-form-card .login-input:focus {
+            outline:none;
+            border-color:#d4a017;
+            box-shadow:0 0 0 3px rgba(212,160,23,0.14);
+        }
+        .savings-submit, .savings-withdraw-submit {
+            display:block !important;
+            width:100% !important;
+            min-height:38px;
+            box-sizing:border-box;
+            border-radius:7px !important;
+            color:#ffffff !important;
+            font:inherit !important;
+            font-size:14px !important;
+            font-weight:500 !important;
+            cursor:pointer;
+            margin-top:auto;
+        }
+        .savings-submit { background:#081f33 !important; border-color:#081f33 !important; }
+        .savings-withdraw-submit { background:#8a6500 !important; border-color:#8a6500 !important; }
+        .loan-action-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+        .loan-form-card { border-top:3px solid #081f33; display:flex; flex-direction:column; }
+        .application-card { border-top-color:#d4a017; }
+        .loan-form-stack { display:flex; flex-direction:column; flex:1; width:100%; }
+        .loan-form-card .form-group { width:100%; margin-bottom:14px; }
+        .loan-form-card label { display:block; margin-bottom:7px; color:#243447; font-size:13px; font-weight:600; }
+        .loan-form-card input[type="text"],
+        .loan-form-card input[type="number"],
+        .loan-form-card textarea,
+        .loan-form-card .login-input {
+            display:block;
+            width:100% !important;
+            max-width:none !important;
+            box-sizing:border-box;
+            border:1px solid #cfd8d3;
+            border-radius:7px;
+            padding:8px 10px;
+            font:inherit;
+            font-size:14px;
+            background:#ffffff;
+            color:#081f33;
+        }
+        .loan-form-card input[type="text"],
+        .loan-form-card input[type="number"],
+        .loan-form-card .login-input:not(textarea) { height:38px; }
+        .loan-reason-input { min-height:86px !important; resize:vertical; line-height:1.4; }
+        .loan-form-card input[type="text"]:focus,
+        .loan-form-card input[type="number"]:focus,
+        .loan-form-card textarea:focus,
+        .loan-form-card .login-input:focus {
+            outline:none;
+            border-color:#d4a017;
+            box-shadow:0 0 0 3px rgba(212,160,23,0.14);
+        }
+        .loan-submit, .loan-apply-submit {
+            display:block !important;
+            width:100% !important;
+            min-height:38px;
+            box-sizing:border-box;
+            border-radius:7px !important;
+            color:#ffffff !important;
+            font:inherit !important;
+            font-size:14px !important;
+            font-weight:500 !important;
+            cursor:pointer;
+            margin-top:auto;
+        }
+        .loan-submit { background:#081f33 !important; border-color:#081f33 !important; }
+        .loan-apply-submit { background:#8a6500 !important; border-color:#8a6500 !important; }
+        .loan-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid #edf0f2; }
+        .loan-repayment-card { max-width:760px; }
+        .loan-repayment-detail-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+        .loan-detail-grid div { background:#f8fbf9; border:1px solid #e4e9e7; border-radius:8px; padding:9px; }
+        .loan-detail-grid span { display:block; color:#64748b; font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.3px; }
+        .loan-detail-grid strong { display:block; margin-top:3px; color:#081f33; font-size:13px; font-weight:600; }
+        .loan-info-note, .loan-alert, .loan-empty-state { border-radius:8px; padding:9px 10px; margin-bottom:12px; font-size:13px; line-height:1.35; font-weight:400; }
+        .loan-info-note { background:#f8fbf9; color:#475569; border:1px solid #e4e9e7; }
+        .loan-alert { background:#fff8df; color:#664d03; border:1px solid rgba(212,160,23,0.34); }
+        .loan-alert.danger { background:#f8d7da; color:#842029; border-color:#f5c2c7; margin-bottom:0; }
+        .loan-empty-state { background:#f8fbf9; color:#64748b; border:1px dashed #cfd8d3; margin-bottom:0; }
+        .statement-card { padding:0; overflow:hidden; }
+        .statement-toolbar { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:14px; border-bottom:1px solid #edf0f2; }
+        .statement-toolbar h3 { margin:0 0 4px; }
+        .statement-toolbar p { margin:0; color:#64748b; font-size:13px; }
+        .statement-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .statement-download-form { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:0; }
+        .statement-tabs { display:inline-flex; padding:3px; border:1px solid #dfe7e3; border-radius:8px; background:#f8fbf9; }
+        .statement-tab { border:0; background:transparent; color:#475569; border-radius:6px; padding:7px 10px; font:inherit; font-size:13px; font-weight:500; cursor:pointer; }
+        .statement-tab.active { background:#081f33; color:#ffffff; }
+        .statement-print-button { border:1px solid #8a6500; background:#8a6500; color:#ffffff; border-radius:7px; padding:8px 11px; font:inherit; font-size:13px; font-weight:500; cursor:pointer; }
+        .statement-print-button.secondary { border-color:#081f33; background:#081f33; }
+        .loan-download-button { display:none; }
+        .statement-table-wrap { overflow-x:auto; padding:0; }
+        .statement-table { width:100%; border-collapse:collapse; min-width:720px; }
+        .statement-table th, .statement-table td { padding:11px 14px; border-bottom:1px solid #edf0f2; text-align:left; font-size:13px; vertical-align:middle; }
+        .statement-table th { background:#f8fbf9; color:#475569; font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.35px; }
+        .statement-table tbody tr:hover td { background:#fbfcfb; }
+        .statement-table tr:last-child td { border-bottom:0; }
+        .amount-col { text-align:right !important; white-space:nowrap; }
+        .statement-badge { display:inline-flex; align-items:center; border-radius:6px; padding:3px 7px; background:#fff8df; color:#664d03; font-size:11px; font-weight:500; }
+        .statement-empty-state { margin:14px; border:1px dashed #cfd8d3; border-radius:8px; padding:14px; color:#64748b; font-size:13px; }
         .info-row { display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid #dee2e6; font-size:15px; }
-        .info-label { color:#6c757d; font-weight:500; }
-        .info-value { color:#212529; font-weight:700; text-align:right; }
+        .info-label { color:#64748b; font-weight:600; }
+        .info-value { color:#081f33; font-weight:800; text-align:right; }
+        .member-logout-button { border:1px solid #dc3545; background:#ffffff; color:#dc3545; border-radius:999px; padding:8px 14px; font-weight:800; cursor:pointer; }
+        .member-logout-button:hover { background:#dc3545; color:#ffffff; }
         @media (max-width: 800px) {
             .member-app-container { flex-direction:column; }
             .member-sidebar { width:100%; }
             .member-sidebar-menu { flex-direction:row; flex-wrap:wrap; }
+            .member-topbar { padding:16px 20px; align-items:flex-start; gap:12px; flex-direction:column; }
+            .member-content-body { padding:22px; }
+            .dashboard-hero, .dashboard-section-heading { flex-direction:column; }
+            .dashboard-account-chip { width:100%; box-sizing:border-box; }
+            .dashboard-main-grid, .dashboard-action-stack, .savings-action-grid, .loan-action-grid, .loan-repayment-detail-grid { grid-template-columns:1fr; }
+            .statement-toolbar { align-items:flex-start; flex-direction:column; }
+            .dashboard-activity-item { grid-template-columns:1fr; align-items:flex-start; gap:7px; }
+            .activity-type-marker span { width:auto; padding:0 8px; }
+            .activity-main p { white-space:normal; }
+            .activity-amount { text-align:left; }
         }
     </style>
 </h:head>
@@ -43,10 +314,11 @@
 
     <div class="member-app-container">
         <aside class="member-sidebar">
-            <div class="member-sidebar-brand">Member Portal</div>
+            <div class="member-sidebar-brand">Kimwanyi SACCO<small>Member Portal</small></div>
             <nav class="member-sidebar-menu">
                 <h:outputLink value="#{request.contextPath}/member/member-dashboard.xhtml" styleClass="member-sidebar-link">Dashboard</h:outputLink>
-                <h:outputLink value="#{request.contextPath}/member/loan-apply.xhtml" styleClass="member-sidebar-link">Apply for Loan</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/member/savings.xhtml" styleClass="member-sidebar-link">Savings</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/member/loan-apply.xhtml" styleClass="member-sidebar-link">Loans</h:outputLink>
                 <h:outputLink value="#{request.contextPath}/member/statement.xhtml" styleClass="member-sidebar-link">Statements</h:outputLink>
                 <h:outputLink value="#{request.contextPath}/member/profile.xhtml" styleClass="member-sidebar-link">My Profile</h:outputLink>
             </nav>
@@ -54,11 +326,11 @@
 
         <main class="member-main-workspace">
             <header class="member-topbar">
-                <div style="font-weight:700; color:#495057;">Kimwanyi SACCO Member Area</div>
+                <div class="member-topbar-title">Kimwanyi SACCO Member Area</div>
                 <h:form>
                     <h:commandButton value="Logout"
                                      action="#{authBean.logout()}"
-                                     style="border:1px solid #dc3545; background:#ffffff; color:#dc3545; border-radius:6px; padding:8px 12px; font-weight:600; cursor:pointer;"/>
+                                     styleClass="member-logout-button"/>
                 </h:form>
             </header>
 
@@ -67,5 +339,45 @@
             </div>
         </main>
     </div>
+    <script>
+        function formatUgx(value) {
+            return 'UGX ' + Number(value || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function previewWithdrawal(input, currentBalance) {
+            var amount = parseFloat(input.value || '0');
+            var remaining = Number(currentBalance || 0) - amount;
+            var target = document.getElementById('withdrawPreview');
+            if (!target) return;
+            target.textContent = remaining &lt; 20000
+                ? 'Error: this withdrawal would leave ' + formatUgx(remaining) + '. Minimum required balance is UGX 20,000.'
+                : 'Balance after withdrawal: ' + formatUgx(remaining) + '.';
+            target.className = remaining &lt; 20000 ? 'form-help error-text' : 'form-help';
+        }
+
+        function previewLoan(input) {
+            var amount = parseFloat(input.value || '0');
+            var interest = amount * 0.10;
+            var total = amount + interest;
+            var target = document.getElementById('loanPreview');
+            if (!target) return;
+            target.textContent = amount > 0
+                ? 'If you borrow ' + formatUgx(amount) + ', 10% flat interest is ' + formatUgx(interest) + ' and total repayment will be ' + formatUgx(total) + '.'
+                : 'Interest preview appears as you type.';
+        }
+
+        function showLedger(type, button) {
+            document.getElementById('savingsLedger').style.display = type === 'savings' ? 'block' : 'none';
+            document.getElementById('loanLedger').style.display = type === 'loan' ? 'block' : 'none';
+            var savingsPdfButton = document.querySelector('.savings-download-button');
+            var loanPdfButton = document.querySelector('.loan-download-button');
+            if (savingsPdfButton) savingsPdfButton.style.display = type === 'savings' ? 'inline-block' : 'none';
+            if (loanPdfButton) loanPdfButton.style.display = type === 'loan' ? 'inline-block' : 'none';
+            var buttons = button.parentElement.querySelectorAll('.tab-button');
+            if (buttons.length === 0) buttons = button.parentElement.querySelectorAll('.statement-tab');
+            buttons.forEach(function (btn) { btn.classList.remove('active'); });
+            button.classList.add('active');
+        }
+    </script>
 </h:body>
 </html>
