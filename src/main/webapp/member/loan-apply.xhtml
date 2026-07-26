@@ -94,15 +94,15 @@
                     <div class="dashboard-section-heading">
                         <div>
                             <h3>Loan Application</h3>
-                            <p>Apply only when you have no active loan.</p>
+                            <p>Apply only when you have no pending or outstanding loan.</p>
                         </div>
                     </div>
 
-                    <h:panelGroup rendered="#{not empty memberPortalBean.activeLoan}">
-                        <div class="loan-alert">You currently have an active loan. Fully repay it before applying for a new one.</div>
+                    <h:panelGroup rendered="#{memberPortalBean.hasOpenLoan}">
+                        <div class="loan-alert">#{memberPortalBean.openLoanApplicationBlockMessage}</div>
                     </h:panelGroup>
 
-                    <h:panelGroup rendered="#{empty memberPortalBean.activeLoan}">
+                    <h:panelGroup rendered="#{not memberPortalBean.hasOpenLoan}">
                         <h:form id="loanRequestForm" styleClass="loan-form-stack">
                             <div class="loan-info-note">
                                 Maximum eligible amount: UGX <h:outputText value="#{memberPortalBean.maximumEligibleLoanAmount}"><f:convertNumber pattern="#,##0.00"/></h:outputText>

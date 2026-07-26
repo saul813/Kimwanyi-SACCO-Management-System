@@ -49,6 +49,22 @@ public class LoanDAO {
         }
     }
 
+    public Loan findOpenLoanByUserId(Long userId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Loan> query = session.createQuery(
+                    "SELECT l FROM Loan l JOIN FETCH l.member WHERE l.member.id = :uid AND (l.status = :pendingStatus OR (l.status = :approvedStatus AND l.amountRepaid < l.totalRepayable)) ORDER BY l.appliedAt DESC",
+                    Loan.class);
+            query.setParameter("uid", userId);
+            query.setParameter("pendingStatus", Loan.LoanStatus.PENDING);
+            query.setParameter("approvedStatus", Loan.LoanStatus.APPROVED);
+            query.setMaxResults(1);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Pulls all pending loan applications for the Administrative Review grid panel
     public List<Loan> findPendingLoans() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

@@ -575,6 +575,23 @@ public class MemberPortalBean implements Serializable {
                 .findFirst()
                 .orElse(null);
     }
+    public Loan getOpenLoan() {
+        return personalLoans.stream()
+                .filter(loan -> loan.getStatus() == Loan.LoanStatus.PENDING
+                        || (loan.getStatus() == Loan.LoanStatus.APPROVED && loan.getAmountRepaid().compareTo(loan.getTotalRepayable()) < 0))
+                .findFirst()
+                .orElse(null);
+    }
+    public boolean isHasOpenLoan() { return getOpenLoan() != null; }
+    public String getOpenLoanApplicationBlockMessage() {
+        Loan openLoan = getOpenLoan();
+        if (openLoan == null) {
+            return "";
+        }
+        return openLoan.getStatus() == Loan.LoanStatus.PENDING
+                ? "You already have a pending loan application awaiting admin review."
+                : "You currently have an approved loan that has not been fully repaid.";
+    }
     public BigDecimal getOutstandingBalance(Loan loan) {
         return loan == null ? BigDecimal.ZERO : loan.getTotalRepayable().subtract(loan.getAmountRepaid());
     }

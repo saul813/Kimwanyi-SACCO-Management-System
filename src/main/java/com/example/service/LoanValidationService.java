@@ -24,10 +24,13 @@ public class LoanValidationService {
      * @return ValidationResult object containing status and failure descriptions if applicable.
      */
     public ValidationResult validateLoanEligibility(Long userId, BigDecimal requestedAmount) {
-        // Rule 1: Exclusivity Check (Only 1 active loan permitted at any given time)
-        Loan activeLoan = loanDAO.findActiveLoanByUserId(userId);
-        if (activeLoan != null) {
-            return new ValidationResult(false, "Application Rejected: You currently hold an outstanding active loan.");
+        // Rule 1: Exclusivity Check (Only 1 pending or outstanding approved loan permitted at any given time)
+        Loan openLoan = loanDAO.findOpenLoanByUserId(userId);
+        if (openLoan != null) {
+            if (openLoan.getStatus() == Loan.LoanStatus.PENDING) {
+                return new ValidationResult(false, "Application Rejected: You already have a pending loan application awaiting admin review.");
+            }
+            return new ValidationResult(false, "Application Rejected: You currently hold an approved loan that has not been fully repaid.");
         }
 
         // Retrieve savings balance for limit evaluation
